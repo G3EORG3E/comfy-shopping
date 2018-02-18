@@ -8,21 +8,35 @@
     <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-    <div id="app">
+    <div id="root">
 
+        <hr>
 
+        <shopping-cart></shopping-cart>
 
-        <p>{{ message }}</p>
-
-        <shopping-cart @addprod="addProd"></shopping-cart>
-
-        <product-item :attributes="{name:'MORE', price:100}" @add="sayHi" inline-template>
+        <hr>
+        
+        <product-item :attributes="{id: 3, name: 'tři', price: 32500, currency: 'Kč'}" inline-template>
             <div class="product-item">
                 <div class="name" v-text="product.name">MORE</div>
-                <div class="price" init-price="100" v-text="product.price">100kč</div>
+                <div>
+                    <span class="price" v-text="product.price">100kč</span>
+                    <span class="price" v-text="product.currency">100kč</span>
+                </div>
                 <button @click="addToCart">Add to cart</button>
             </div>
         </product-item>
+        <product-item :attributes="{id: 4, name: 'čtyř', price: 882500, currency: 'Kč'}" inline-template>
+            <div class="product-item">
+                <div class="name" v-text="product.name">MORE</div>
+                <div>
+                    <span class="price" v-text="product.price">100kč</span>
+                    <span class="price" v-text="product.currency">100kč</span>
+                </div>
+                <button @click="addToCart">Add to cart</button>
+            </div>
+        </product-item>
+        
 
 
 

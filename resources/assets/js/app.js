@@ -2,21 +2,13 @@ import './bootstrap';
 import shoppingCart from './components/ShoppingCart.vue';
 import productItem from './components/ProductItem.vue';
 
-//Vue.component('shopping-cart', shoppingCart);
+window.EventBus = new Vue();
 
-new Vue({
-    el: '#app',
+const app = new Vue({
+    el: '#root',
     components: {      
         productItem,
         shoppingCart
-    },
-    data: {
-        message: 'hey'
-    },
-    methods: {
-        sayHi(product) {
-            alert(prouct.name);
-        }
     }
 }); 
   

@@ -6,8 +6,10 @@ export default {
     data() {
         return {
             product: {
+                id: this.attributes.id,
                 name: this.attributes.name,
-                price: this.attributes.price
+                price: this.attributes.price,
+                currency: this.attributes.currency
             }
         };
     },   
@@ -16,7 +18,7 @@ export default {
     },
     methods: {
         addToCart() {
-            this.$emit('add', this.product);
+            EventBus.$emit('add-to-cart', this.product);
         }
     }
 }
