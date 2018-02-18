@@ -23531,7 +23531,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            products: [{ id: 1, name: "jedna", price: 2500, count: 1 }, { id: 2, name: "dva", price: 5700, count: 1 }]
+            products: [{ id: 1, name: "jedna", price: 2500, count: 1 }, { id: 2, name: "dva", price: 5700, count: 1 }],
+            currency: 'Kč'
         };
     },
 
@@ -23560,6 +23561,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             } else {
                 var index = this.products.indexOf(prod);
                 this.products[index].count++;
+                this.$forceUpdate();
             }
         },
         removeProd: function removeProd(prod) {
@@ -23581,19 +23583,18 @@ var render = function() {
     _c(
       "ul",
       _vm._l(_vm.products, function(product) {
-        return _c("li", {
-          key: product.id,
-          domProps: {
-            textContent: _vm._s(
-              product.name + " " + product.price * product.count
-            )
-          },
-          on: {
-            click: function($event) {
-              _vm.removeProd(product)
+        return _c(
+          "li",
+          {
+            key: product.id,
+            on: {
+              click: function($event) {
+                _vm.removeProd(product)
+              }
             }
-          }
-        })
+          },
+          [_vm._v(_vm._s(product.name + " " + product.price * product.count))]
+        )
       })
     ),
     _vm._v(" "),

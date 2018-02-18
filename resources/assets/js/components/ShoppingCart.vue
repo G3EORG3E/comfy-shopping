@@ -1,7 +1,7 @@
 <template>
     <div id="cart">
         <ul>
-            <li v-for="product in products" v-text="product.name + ' ' + (product.price * product.count)" :key="product.id" @click="removeProd(product)"></li>
+            <li v-for="product in products" :key="product.id" @click="removeProd(product)">{{ product.name + ' ' + (product.price * product.count) }}</li>
         </ul>
         <div class="sum" v-text="sumVAT"></div>
     </div>
@@ -14,7 +14,8 @@ export default {
             products: [
                 {id: 1, name: "jedna", price: 2500, count: 1},
                 {id: 2, name: "dva", price: 5700, count: 1}
-            ]
+            ],
+            currency: 'Kč'
         };
     },
     computed: {
@@ -38,6 +39,7 @@ export default {
             else {
                 let index = this.products.indexOf(prod);
                 this.products[index].count++;
+                this.$forceUpdate();
             }
         },
         removeProd(prod) {
