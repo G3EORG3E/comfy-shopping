@@ -1,7 +1,9 @@
 <template>
-    <div id="cart">
+    <div id="shopping-cart">
         <ul>
-            <li v-for="product in products" :key="product.id" @click="removeProd(product)">{{ product.name + ' ' + (product.price * product.count) }}</li>
+            <transition-group name="list" tag="p">
+                <li v-for="product in products" :key="product.id" @click="removeProd(product)">{{ product.name + ' ' + (product.price * product.count) }}</li>
+            </transition-group>
         </ul>
         <div class="sum" v-text="sumVAT"></div>
     </div>
@@ -12,18 +14,16 @@ export default {
     data() {
         return {
             products: [
-                {id: 1, name: "jedna", price: 2500, count: 1},
-                {id: 2, name: "dva", price: 5700, count: 1}
+                {id: 1, name: "jedna", price: 2500, count: 1, currency: 'Kč'},
+                {id: 2, name: "dva", price: 5700, count: 1, currency: 'Kč'}
             ],
             currency: 'Kč'
         };
     },
     computed: {
-        sumVAT: function () {
+        sumVAT() {
             let sum = 0;
-            this.products.forEach(function (product) {
-                sum+= product.price;
-            });
+            this.products.forEach(product => sum+= product.price * product.count);
             return sum;
         } 
     },        
@@ -38,8 +38,8 @@ export default {
             }
             else {
                 let index = this.products.indexOf(prod);
-                this.products[index].count++;
-                this.$forceUpdate();
+                this.products[index].count++;                
+                Vue.set(this.products, index, this.products[index])
             }
         },
         removeProd(prod) {

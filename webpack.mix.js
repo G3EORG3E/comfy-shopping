@@ -13,7 +13,8 @@ let mix = require('laravel-mix');
 
 mix.setPublicPath('public')
     .js('resources/assets/js/app.js', 'public/js/app.js')
-    .sass('resources/assets/scss/app.scss', 'public/css/app.css');
+    .sass('resources/assets/scss/app.scss', 'public/css/app.css')
+    .version();
 
 
 

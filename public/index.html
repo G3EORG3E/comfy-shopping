@@ -21,36 +21,33 @@
     </div>
 
     <div id="page-cover">
-        The Ultimated Cart
+        The Ultimate Cart
     </div>
-
-    <hr>
 
     <shopping-cart></shopping-cart>
 
-    <hr>
-
-    <product-item :attributes="{id: 3, name: 'tři', price: 32500, currency: 'Kč'}" inline-template>
-        <div class="product-item">
-            <div class="name" v-text="product.name">MORE</div>
-            <div>
-                <span class="price" v-text="product.price">100kč</span>
-                <span class="price" v-text="product.currency">100kč</span>
+    <div class="products-holder">
+        <product-item :attributes="{id: 3, name: 'tři', price: 32500, currency: 'Kč'}" inline-template>
+            <div class="product-item">
+                <div class="name" v-text="product.name">MORE</div>
+                <div>
+                    <span class="price" v-text="product.price">100kč</span>
+                    <span class="price" v-text="product.currency">100kč</span>
+                </div>
+                <button @click="addToCart">Add to cart</button>
             </div>
-            <button @click="addToCart">Add to cart</button>
-        </div>
-    </product-item>
-    <product-item :attributes="{id: 4, name: 'čtyř', price: 882500, currency: 'Kč'}" inline-template>
-        <div class="product-item">
-            <div class="name" v-text="product.name">MORE</div>
-            <div>   
-                <span class="price" v-text="product.price">100kč</span>
-                <span class="price" v-text="product.currency">100kč</span>
+        </product-item>
+        <product-item :attributes="{id: 4, name: 'čtyř', price: 882500, currency: 'Kč'}" inline-template>
+            <div class="product-item">
+                <div class="name" v-text="product.name">MORE</div>
+                <div>   
+                    <span class="price" v-text="product.price">100kč</span>
+                    <span class="price" v-text="product.currency">100kč</span>
+                </div>
+                <button @click="addToCart">Add to cart</button>
             </div>
-            <button @click="addToCart">Add to cart</button>
-        </div>
-    </product-item>
-    
+        </product-item>
+    </div>
 
 
 

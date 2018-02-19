@@ -1,0 +1,14 @@
+[
+    {
+        "id": "string",
+        "completeName": "string",
+        "code": "string",
+        "image": "string",
+        "producerName": "string",
+        "producerHomePageUrl": "string",
+        "descriptionSummary": "string",
+        "amountStep": 0,
+        "amountUnit": "string",
+        "priceWithVatForCustomer": 500
+    }
+]

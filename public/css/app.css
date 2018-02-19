@@ -94,3 +94,26 @@ body {
   font-size: 50px;
 }
 
+.products-holder {
+  background: #000;
+  color: #fff;
+  padding: 50px 5%;
+}
+
+#shopping-cart {
+  padding: 50px 5%;
+}
+
+.list-enter-active,
+.list-leave-active {
+  -webkit-transition: all 1s;
+  transition: all 1s;
+}
+
+.list-enter,
+.list-leave-to {
+  opacity: 0;
+  -webkit-transform: translateY(30px);
+          transform: translateY(30px);
+}
+
