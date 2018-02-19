@@ -1680,6 +1680,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -12697,39 +12699,41 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { attrs: { id: "shopping-cart" } }, [
-    _c(
-      "ul",
-      [
-        _c(
-          "transition-group",
-          { attrs: { name: "list", tag: "p" } },
-          _vm._l(_vm.products, function(product) {
-            return _c(
-              "li",
-              {
-                key: product.id,
-                on: {
-                  click: function($event) {
-                    _vm.removeProd(product)
+    _c("div", { staticClass: "cart-holder" }, [
+      _c(
+        "ul",
+        [
+          _c(
+            "transition-group",
+            { attrs: { name: "list", tag: "p" } },
+            _vm._l(_vm.products, function(product) {
+              return _c(
+                "li",
+                {
+                  key: product.id,
+                  on: {
+                    click: function($event) {
+                      _vm.removeProd(product)
+                    }
                   }
-                }
-              },
-              [
-                _vm._v(
-                  _vm._s(product.name + " " + product.price * product.count)
-                )
-              ]
-            )
-          })
-        )
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _c("div", {
-      staticClass: "sum",
-      domProps: { textContent: _vm._s(_vm.sumVAT) }
-    })
+                },
+                [
+                  _vm._v(
+                    _vm._s(product.name + " " + product.price * product.count)
+                  )
+                ]
+              )
+            })
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("div", {
+        staticClass: "sum",
+        domProps: { textContent: _vm._s(_vm.sumVAT) }
+      })
+    ])
   ])
 }
 var staticRenderFns = []

@@ -1,11 +1,13 @@
 <template>
     <div id="shopping-cart">
-        <ul>
-            <transition-group name="list" tag="p">
-                <li v-for="product in products" :key="product.id" @click="removeProd(product)">{{ product.name + ' ' + (product.price * product.count) }}</li>
-            </transition-group>
-        </ul>
-        <div class="sum" v-text="sumVAT"></div>
+        <div class="cart-holder">
+            <ul>
+                <transition-group name="list" tag="p">
+                    <li v-for="product in products" :key="product.id" @click="removeProd(product)">{{ product.name + ' ' + (product.price * product.count) }}</li>
+                </transition-group>
+            </ul>
+            <div class="sum" v-text="sumVAT"></div>
+        </div>
     </div>
 </template>
 
