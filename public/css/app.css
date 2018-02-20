@@ -35,8 +35,8 @@ body {
       -ms-flex-pack: justify;
           justify-content: space-between;
   z-index: 10;
-  -webkit-box-shadow: 0 3px 16px rgba(0, 0, 0, 0.02);
-          box-shadow: 0 3px 16px rgba(0, 0, 0, 0.02);
+  -webkit-box-shadow: 0 3px 16px rgba(0, 0, 0, 0.033);
+          box-shadow: 0 3px 16px rgba(0, 0, 0, 0.033);
 }
 
 #main-header #page-logo {
@@ -105,7 +105,7 @@ body {
 
 #page-cover {
   margin-top: 110px;
-  padding: 185px 5%;
+  padding: 200px 5%;
   text-align: center;
   font-weight: bold;
   font-size: 50px;
@@ -131,7 +131,7 @@ body {
   color: white;
   font-size: 14vw;
   text-transform: uppercase;
-  text-shadow: 0 0 48px rgba(0, 0, 0, 0.05);
+  text-shadow: 0 0 48px rgba(0, 0, 0, 0.06);
 }
 
 #page-cover h1 {
@@ -155,6 +155,8 @@ body {
 
 #shopping-cart {
   padding: 50px 5%;
+  background: #1c1d1f;
+  color: #fff;
 }
 
 .list-enter-active,

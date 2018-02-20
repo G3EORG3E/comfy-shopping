@@ -1,0 +1,11 @@
+{
+    "product": {
+        "id": 3, 
+        "name": "tři",
+        "price": 32500,
+        "currency": "Kč"
+    }, 
+    "sumPrice": {
+        "priceVAT": 500
+    }
+}

@@ -15,11 +15,6 @@ export default {
     },   
     mounted() {  
         console.log('Component mounted.')
-    },
-    methods: {
-        addToCart() {
-            EventBus.$emit('add-to-cart', this.product);
-        }
     }
 }
 </script>

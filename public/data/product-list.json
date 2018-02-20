@@ -1,0 +1,20 @@
+[
+    {
+        "id": 4,
+        "name": "čtyř",
+        "price": 882500,
+        "currency": "Kč"
+    },
+    {
+        "id": 5,
+        "name": "pet",
+        "price": 8542500,
+        "currency": "Kč"
+    },
+    {
+        "id": 6,
+        "name": "šest",
+        "price": 782500,
+        "currency": "Kč"
+    }
+]
