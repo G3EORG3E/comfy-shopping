@@ -24,7 +24,7 @@ body {
 #main-header {
   position: fixed;
   background: rgba(255, 255, 255, 0.98);
-  padding: 40px 5%;
+  padding: 29px 5%;
   top: 0;
   left: 0;
   width: 100%;
@@ -43,6 +43,11 @@ body {
   text-transform: uppercase;
   font-weight: bold;
   font-size: 22px;
+  color: #fff;
+  background: -webkit-gradient(linear, left top, right top, from(#dc9ef7), to(#8e9afc));
+  background: linear-gradient(to right, #dc9ef7 0%, #8e9afc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 #main-header #page-logo span {
@@ -64,6 +69,9 @@ body {
           align-items: center;
   padding: 0 50px;
   border-radius: 9px 0 0 9px;
+  background: -webkit-gradient(linear, left top, right top, from(#dc9ef7), to(#8e9afc));
+  background: linear-gradient(to right, #dc9ef7 0%, #8e9afc 100%);
+  cursor: pointer;
 }
 
 #cart-status .ico {
@@ -75,17 +83,17 @@ body {
 
 #cart-status .items-count {
   position: absolute;
-  background: #fff;
-  color: #1c1d1f;
+  background: #d6c6ff;
+  color: #8e79c5;
   border-radius: 50%;
-  width: 22px;
+  width: 21px;
   line-height: 19px;
   text-align: center;
   font-size: 12px;
   font-weight: bold;
   top: -9px;
   right: -9px;
-  border: 2px solid #1c1d1f;
+  border: 1px solid #be9cf8;
 }
 
 #cart-status .price {
@@ -104,8 +112,8 @@ body {
 }
 
 #page-cover {
-  margin-top: 110px;
-  padding: 200px 5%;
+  margin-top: 85px;
+  padding: 220px 5%;
   text-align: center;
   font-weight: bold;
   font-size: 50px;
@@ -132,30 +140,37 @@ body {
   font-size: 14vw;
   text-transform: uppercase;
   text-shadow: 0 0 48px rgba(0, 0, 0, 0.06);
+  text-shadow: #eeeeee -0.520757px 0.520757px 0px, #eeeeee -1.52076px 1.52076px 0px, #efefef -2.52076px 2.52076px 0px, #efefef -3.52076px 3.52076px 0px, #efefef -4.52076px 4.52076px 0px, #f0f0f0 -5.52076px 5.52076px 0px, #f0f0f0 -6.52076px 6.52076px 0px, #f0f0f0 -7.52076px 7.52076px 0px, #f1f1f1 -8.52076px 8.52076px 0px, #f1f1f1 -9.52076px 9.52076px 0px, #f2f2f2 -10.5208px 10.5208px 0px, #f2f2f2 -11.5208px 11.5208px 0px, #f2f2f2 -12.5208px 12.5208px 0px, #f3f3f3 -13.5208px 13.5208px 0px, #f3f3f3 -14.5208px 14.5208px 0px, #f3f3f3 -15.5208px 15.5208px 0px, #f4f4f4 -16.5208px 16.5208px 0px, #f4f4f4 -17.5208px 17.5208px 0px, whitesmoke -18.5208px 18.5208px 0px, whitesmoke -19.5208px 19.5208px 0px, whitesmoke -20.5208px 20.5208px 0px, #f6f6f6 -21.5208px 21.5208px 0px, #f6f6f6 -22.5208px 22.5208px 0px, #f6f6f6 -23.5208px 23.5208px 0px, #f7f7f7 -24.5208px 24.5208px 0px, #f7f7f7 -25.5208px 25.5208px 0px, #f7f7f7 -26.5208px 26.5208px 0px, #f8f8f8 -27.5208px 27.5208px 0px, #f8f8f8 -28.5208px 28.5208px 0px, #f9f9f9 -29.5208px 29.5208px 0px, #f9f9f9 -30.5208px 30.5208px 0px, #f9f9f9 -31.5208px 31.5208px 0px, #fafafa -32.5208px 32.5208px 0px, #fafafa -33.5208px 33.5208px 0px, #fafafa -34.5208px 34.5208px 0px, #fbfbfb -35.5208px 35.5208px 0px, #fbfbfb -36.5208px 36.5208px 0px, #fcfcfc -37.5208px 37.5208px 0px, #fcfcfc -38.5208px 38.5208px 0px, #fcfcfc -39.5208px 39.5208px 0px, #fdfdfd -40.5208px 40.5208px 0px, #fdfdfd -41.5208px 41.5208px 0px, #fdfdfd -42.5208px 42.5208px 0px, #fefefe -43.5208px 43.5208px 0px, #fefefe -44.5208px 44.5208px 0px, white -45.5208px 45.5208px 0px;
 }
 
 #page-cover h1 {
   position: relative;
   margin: 0;
   font-size: 43px;
+  color: #fff;
+  text-transform: uppercase;
+  background: -webkit-gradient(linear, left top, right top, from(#dc9ef7), to(#8e9afc));
+  background: linear-gradient(to right, #dc9ef7 0%, #8e9afc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 #page-cover h1 span {
   display: block;
   font-size: 15px;
   font-weight: 600;
-  color: #949494;
+  color: #9389af;
 }
 
 .products-holder {
-  background: #f0f0f0;
+  background: #f6f4fb;
   color: #1c1d1f;
   padding: 50px 5%;
 }
 
 #shopping-cart {
   padding: 50px 5%;
-  background: #1c1d1f;
+  background: #655a82;
   color: #fff;
 }
 
