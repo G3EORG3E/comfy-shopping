@@ -137,17 +137,66 @@ body {
 	padding: 50px 5%;
 }
 #shopping-cart {
-	padding: 50px 5%;
-	background: #655a82;
-	color: #fff;
+	//position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background: rgba(86, 86, 109, 0.7);
+    color: #fff;
+    display: flex;
+    justify-content: flex-end;
+
+	.cart-holder {
+		width: 50%;
+		background: rgba(86, 86, 109, 0.66);
+		padding: 4%;
+	}
 }
 
 
-.list-enter-active, .list-leave-active {
-  transition: all 1s;
+.list-leave-active {
+  animation: fadeOutRight 1s;
 }
 
-.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
-  opacity: 0;
-  transform: translateY(30px);
+.list-enter-active {
+  animation: flipInX 1s;
+}
+
+@keyframes fadeOutRight {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@keyframes flipInX {
+  from {
+    transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+    animation-timing-function: ease-in;
+    opacity: 0;
+  }
+
+  40% {
+    transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    animation-timing-function: ease-in;
+  }
+
+  60% {
+    transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+    opacity: 1;
+  }
+
+  80% {
+    transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+  }
+
+  to {
+    transform: perspective(400px);
+  }
 }
