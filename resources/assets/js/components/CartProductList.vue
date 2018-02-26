@@ -1,5 +1,6 @@
 <template>
 	<div id="cart-product-list">
+		<h1>Košík</h1>	
 		<ul>
 			<transition-group name="list" tag="p">
 				<li v-for="product in products" :key="product.id">

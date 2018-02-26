@@ -153,25 +153,36 @@ body {
 	top: 0;
 	left: 0;
 	z-index: 100;
-	background: rgba(221, 221, 230, 0.34);
-	color: #615588;
+	background: rgba(230, 230, 243, 0.32);
+	color: #8471b3;
 	display: flex;
 	justify-content: flex-end;
 	transition: all .25s ease-in-out;
 	backface-visibility: hidden;
 	position: fixed;
 	transform: translateX(100%);
-	opacity: 0;
+	opacity: 0; 
+	
+	.cart-holder {
+		width: 50%;
+		background: rgba(251, 251, 255, 0.77);
+    padding: 4%;
+		border-radius: 10px 0 0 10px; 		
+	}
+
+	#cart-product-list {
+		transition: all .5s ease-in-out;
+		transform: translateX(50%);
+	}
 
 	&.active {
 		transform: translateX(0);
 		opacity: 1;
-	}
+		
+		#cart-product-list {
+			transform: translateX(0);
+		}
 
-	.cart-holder {
-		width: 50%;
-		background: rgba(238, 238, 243, 0.82);
-		padding: 4%;
 	}
 }
 

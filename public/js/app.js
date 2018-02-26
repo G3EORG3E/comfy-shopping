@@ -138,6 +138,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -3379,6 +3380,8 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { attrs: { id: "cart-product-list" } }, [
+    _c("h1", [_vm._v("Košík")]),
+    _vm._v(" "),
     _c(
       "ul",
       [
