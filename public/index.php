@@ -9,16 +9,10 @@
 </head>
 <body>
 <div id="root">
-    <div class="page-grid">
+    <div id="page-grid">
         <div id="main-header">
             <div id="page-logo">Comfy<span>Shoppin'</span></div>
-            <div id="cart-status">
-                <div class="ico">
-                    <i class="fas fa-shopping-cart"></i>
-                    <div class="items-count">0</div>
-                </div>
-                <div class="price">0 <div class="currency">Kč</div></div>
-            </div>
+            <cart-status></cart-status>            
         </div>
 
         <div id="page-cover">

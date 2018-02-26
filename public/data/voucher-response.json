@@ -1,0 +1,10 @@
+{
+    "isValid": true,
+    "summary": {
+        "currency": "Kč",
+        "price": 55,
+        "vatPrecentage": 15,
+        "vatAmount": 5,
+        "priceVat": 105
+    }
+}

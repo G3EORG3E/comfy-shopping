@@ -5,7 +5,11 @@
         "price": 32500,
         "currency": "Kč"
     }, 
-    "sumPrice": {
-        "priceVAT": 500
+    "summary": {
+        "currency": "Kč",
+        "price": 4524,
+        "vatPrecentage": 15,
+        "vatAmount": 444,
+        "priceVat": 4924
     }
 }

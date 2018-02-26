@@ -1,0 +1,17 @@
+{
+    "products": [
+        {
+            "id": 1, "name": "jedddna", "price": 2500, "count": 1, "currency": "Kč"
+        },
+        {
+            "id": 2, "name": "dva", "price": 5700, "count": 1, "currency": "Kč"
+        }
+    ],
+    "summary": {
+        "currency": "Kč",
+        "price": 500,
+        "vatPrecentage": 15,
+        "vatAmount": 252,
+        "priceVat": 752
+    }
+}

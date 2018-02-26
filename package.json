@@ -17,6 +17,7 @@
     "axios": "^0.17",
     "jquery": "^3.2",
     "laravel-mix": "^2.0",
+    "lodash.findindex": "^4.6.0",
     "vue": "^2.5.7"
   }
 }
