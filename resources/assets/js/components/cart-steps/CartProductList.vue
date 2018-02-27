@@ -1,6 +1,5 @@
 <template>
-	<div id="cart-product-list">
-		<h1>Košík</h1>	
+	<div id="cart-product-list">			
 		<ul>
 			<transition-group name="list" tag="p">
 				<li v-for="product in products" :key="product.id">
@@ -8,9 +7,9 @@
 						{{ product.name + ' ' + (product.price * product.count) }}
 						<a href="#" @click.prevent="removeProd(product)">xxx</a>
 					</div>
+					<a href="#" @click.prevent="(product.count > 1 ? product.count-- : product.count)">--</a>
 					<input type="number" v-model="product.count" min="1" @blur="(product.count < 1 ? product.count=1 : product.count= Math.floor(product.count))">
 					<a href="#" @click.prevent="product.count++">++</a>
-					<a href="#" @click.prevent="(product.count > 1 ? product.count-- : product.count)">--</a>
 				</li>
 			</transition-group>
 		</ul>

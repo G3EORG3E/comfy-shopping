@@ -1,28 +1,44 @@
 <template>
     <div id="shopping-cart" :class="{ active: isVisible }" @click="hideCart">
         <div class="cart-holder" @click.stop>
-            <transition name="component-fade" mode="out-in">
-                <keep-alive>
-                    <component :is="currentView"></component>
-                </keep-alive>
-            </transition>
-            <div class="next-step" @click="currentView='cart-contact-info'">kontakt</div>
+            <div class="inner-holder">  
+                <h1>Košík</h1>          
+                <ul class="cart-setps">
+                    <li v-for="step in stepsArr" :key="step.component" @click="currentStep = step.component">{{step.label}}</li>
+                </ul>
+                <transition name="component-fade" mode="out-in">
+                    <keep-alive>
+                        <component :is="currentStep"></component>
+                    </keep-alive>
+                </transition>
+                <div class="bottom-controls">
+                    <a href="#" class="next-step cart-button ghost" @click.prevent="moveNext">Zpět</a>
+                    <a href="#" class="next-step cart-button" @click.prevent="moveNext">{{currentStepBtn}}</a>
+                </div>
+                <a href="#" class="get-back" @click.prevent="hideCart">Vrátit se k nakupování</a>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-import cartProductList from './CartProductList.vue';
-import cartContactInfo from './CartContactInfo.vue';
-import cartDeliveryInfo from './CartDeliveryInfo.vue';
-import cartPaymentInfo from './CartContactInfo.vue';
+import cartProductList from './cart-steps/CartProductList.vue';
+import cartContactInfo from './cart-steps/CartContactInfo.vue';
+import cartDeliveryInfo from './cart-steps/CartDeliveryInfo.vue';
+import cartPaymentInfo from './cart-steps/CartPaymentInfo.vue';
 
 export default {
     data() {
         return {
             isVisible: false,
-            currentView: 'cart-product-list',
-            componentsArr: ['cart-product-list', 'cart-contact-info', 'cart-delivery-info', 'cart-payment-info']
+            currentStep: 'cart-product-list',
+            currentStepBtn: '',
+            stepsArr: [
+                {component:'cart-product-list', label: 'Košík', nextBtn: 'Kontaktní údaje', isActive: true},
+                {component:'cart-contact-info', label: 'Osboní údaje', nextBtn: 'Vybrat dopravu', isActive: true},
+                {component:'cart-delivery-info', label: 'Doprava', nextBtn: 'Vybrat platbu', isActive: true},
+                {component:'cart-payment-info', label: 'Platba', nextBtn: 'Konec', isActive: true}
+            ]
         };
     },
     created() {
@@ -42,6 +58,9 @@ export default {
         hideCart() { 
             this.isVisible = false;
             document.getElementById('page-grid').classList.remove('active-cart');
+        },
+        moveNext() {
+            
         }
     }
 }
