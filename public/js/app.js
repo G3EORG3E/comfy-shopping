@@ -216,6 +216,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 //
 //
 //
@@ -229,12 +233,119 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
+var Errors = function () {
+    function Errors() {
+        _classCallCheck(this, Errors);
+
+        this.errors = {};
+    }
+
+    _createClass(Errors, [{
+        key: 'isValid',
+        value: function isValid() {}
+    }]);
+
+    return Errors;
+}();
+
+var Form = function () {
+    function Form(data) {
+        _classCallCheck(this, Form);
+
+        this.initialData = data;
+
+        for (var field in data) {
+            this[field] = data[field];
+        }
+
+        this.errors = new Errors();
+    }
+
+    _createClass(Form, [{
+        key: 'data',
+        value: function data() {
+            var data = {};
+
+            for (var property in this.initialData) {
+                data[property] = this[property];
+            }
+
+            return data;
+        }
+    }, {
+        key: 'hasError',
+        value: function hasError() {
+            return false;
+        }
+    }, {
+        key: 'validate',
+        value: function validate(property, rulesArr) {
+
+            var validObj = {
+                reuired: function reuired(value) {
+                    return !!value.length;
+                },
+                fiveplus: function fiveplus(value) {
+                    return value.length >= 5;
+                }
+            };
+
+            var valid = true;
+
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = rulesArr[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var rule = _step.value;
+
+                    if (validObj.hasOwnProperty(rule)) {
+                        valid = valid && validObj[rule](this[property]);
+                        if (valid == false) break;
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            console.log(valid);
+        }
+    }]);
+
+    return Form;
+}();
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      isReachable: false
-    };
-  }
+    data: function data() {
+        return {
+            form: new Form({
+                email: '',
+                firstName: '',
+                surName: '',
+                company: '',
+                id: '',
+                vatId: '',
+                address: '',
+                houseCode: '',
+                city: '',
+                zipCode: '',
+                phone: ''
+            })
+        };
+    }
 });
 
 /***/ }),
@@ -3695,26 +3806,43 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { attrs: { id: "cart-contact-info" } }, [
-      _c("div", { staticClass: "form-item" }, [
-        _c("div", { staticClass: "input-holder" }, [
-          _c("label", { attrs: { for: "" } }, [_vm._v("E-mail")]),
-          _vm._v(" "),
-          _c("input", { attrs: { type: "text" } })
-        ]),
+  return _c("div", { attrs: { id: "cart-contact-info" } }, [
+    _c("div", { staticClass: "form-item" }, [
+      _c("div", { staticClass: "input-holder" }, [
+        _c("label", [_vm._v("E-mail")]),
         _vm._v(" "),
-        _c("div", { staticClass: "error" }, [_vm._v("Msg")])
-      ])
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.form.email,
+              expression: "form.email"
+            }
+          ],
+          attrs: { type: "text" },
+          domProps: { value: _vm.form.email },
+          on: {
+            keyup: function($event) {
+              _vm.form.validate("email", ["reuired", "email", "fiveplus"])
+            },
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.form, "email", $event.target.value)
+            }
+          }
+        })
+      ]),
+      _vm._v(" "),
+      _vm.form.hasError("email")
+        ? _c("div", { staticClass: "error" }, [_vm._v("Msg")])
+        : _vm._e()
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
