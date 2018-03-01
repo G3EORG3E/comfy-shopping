@@ -256,7 +256,7 @@ var Form = function () {
         this.initialData = data;
 
         for (var field in data) {
-            this[field] = data[field];
+            this[field] = data[field].value;
         }
 
         this.errors = new Errors();
@@ -280,7 +280,7 @@ var Form = function () {
         }
     }, {
         key: 'validate',
-        value: function validate(property, rulesArr) {
+        value: function validate(property) {
 
             var validObj = {
                 reuired: function reuired(value) {
@@ -298,7 +298,7 @@ var Form = function () {
             var _iteratorError = undefined;
 
             try {
-                for (var _iterator = rulesArr[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                for (var _iterator = this.initialData[property][rules][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var rule = _step.value;
 
                     if (validObj.hasOwnProperty(rule)) {
@@ -306,6 +306,8 @@ var Form = function () {
                         if (valid == false) break;
                     }
                 }
+
+                //console.log(valid);
             } catch (err) {
                 _didIteratorError = true;
                 _iteratorError = err;
@@ -320,8 +322,6 @@ var Form = function () {
                     }
                 }
             }
-
-            console.log(valid);
         }
     }]);
 
@@ -332,17 +332,50 @@ var Form = function () {
     data: function data() {
         return {
             form: new Form({
-                email: '',
-                firstName: '',
-                surName: '',
-                company: '',
-                id: '',
-                vatId: '',
-                address: '',
-                houseCode: '',
-                city: '',
-                zipCode: '',
-                phone: ''
+                email: {
+                    value: 'asd',
+                    rules: ['required', 'fiveplus']
+                },
+                firstName: {
+                    value: '',
+                    rules: ['required', 'fiveplus']
+                },
+                surName: {
+                    value: '',
+                    rules: ['required', 'fiveplus']
+                },
+                company: {
+                    value: '',
+                    rules: ['required', 'fiveplus']
+                },
+                id: {
+                    value: '',
+                    rules: ['required', 'fiveplus']
+                },
+                vatId: {
+                    value: '',
+                    rules: ['required', 'fiveplus']
+                },
+                address: {
+                    value: '',
+                    rules: ['required', 'fiveplus']
+                },
+                houseCode: {
+                    value: '',
+                    rules: ['required', 'fiveplus']
+                },
+                city: {
+                    value: '',
+                    rules: ['required', 'fiveplus']
+                },
+                zipCode: {
+                    value: '',
+                    rules: ['required', 'fiveplus']
+                },
+                phone: {
+                    value: '',
+                    rules: ['required', 'fiveplus']
+                }
             })
         };
     }
@@ -3816,21 +3849,21 @@ var render = function() {
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.form.email,
-              expression: "form.email"
+              value: _vm.form.email.value,
+              expression: "form.email.value"
             }
           ],
           attrs: { type: "text" },
-          domProps: { value: _vm.form.email },
+          domProps: { value: _vm.form.email.value },
           on: {
             keyup: function($event) {
-              _vm.form.validate("email", ["reuired", "email", "fiveplus"])
+              _vm.form.validate("email")
             },
             input: function($event) {
               if ($event.target.composing) {
                 return
               }
-              _vm.$set(_vm.form, "email", $event.target.value)
+              _vm.$set(_vm.form.email, "value", $event.target.value)
             }
           }
         })
@@ -3907,7 +3940,7 @@ var render = function() {
             "div",
             { staticClass: "inner-holder" },
             [
-              _c("h1", [_vm._v("Košík")]),
+              _vm._m(0),
               _vm._v(" "),
               _c(
                 "ul",
@@ -3995,7 +4028,17 @@ var render = function() {
     ]
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h2", { staticClass: "cart-main-tittle" }, [
+      _vm._v("Košík "),
+      _c("span", [_vm._v("/ Obsah")])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {

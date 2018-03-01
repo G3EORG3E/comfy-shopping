@@ -16,7 +16,7 @@
         </div>
 
         <div id="page-cover">
-            <div class="back-cover">Project</div>
+            <div class="back-cover">CLEVERO</div>
             <h1>Comfortable shopping <span>version 1.0</span></h1>
         </div>    
 

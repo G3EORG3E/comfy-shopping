@@ -3,7 +3,7 @@
         <div class="form-item">
             <div class="input-holder">
                 <label>E-mail</label>
-                <input type="text" v-model="form.email" v-on:keyup="form.validate('email',['reuired','email','fiveplus'])">
+                <input type="text" v-model="form.email.value" @keyup="form.validate('email')">
             </div>
             <div v-if="form.hasError('email')" class="error">Msg</div>
         </div>
@@ -27,7 +27,7 @@ class Form {
         this.initialData = data;
 
         for (let field in data) {
-            this[field] = data[field];
+            this[field] = data[field].value;
         }
 
         this.errors = new Errors();
@@ -47,44 +47,77 @@ class Form {
         return false;
     }
 
-    validate(property, rulesArr) {
+    validate(property) {
 
         let validObj = {
-            reuired: function(value) { return !!value.length },
-            fiveplus: function(value) { return (value.length >= 5) }
+            reuired(value) { return !!value.length },
+            fiveplus(value) { return (value.length >= 5) }
         }
 
         let valid = true;
 
-        for (let rule of rulesArr) {
+        for (let rule of this.initialData[property][rules]) {
             if(validObj.hasOwnProperty(rule)) {
                 valid = valid && validObj[rule](this[property]);
                 if(valid == false) break;
             }
         }
 
-        console.log(valid);
+        //console.log(valid);
     }
 }
 
 export default {
-  data() {
+    data() {
         return {            
             form: new Form({
-                email: '',
-                firstName: '',
-                surName: '',
-                company: '',
-                id: '',
-                vatId: '',
-                address: '' ,
-                houseCode: '',
-                city: '',
-                zipCode: '',
-                phone: ''
+                email: {
+                    value: 'asd',
+                    rules: ['required','fiveplus']
+                },
+                firstName: {
+                    value: '',
+                    rules: ['required','fiveplus']
+                },
+                surName: {
+                    value: '',
+                    rules: ['required','fiveplus']
+                },
+                company: {
+                    value: '',
+                    rules: ['required','fiveplus']
+                },
+                id: {
+                    value: '',
+                    rules: ['required','fiveplus']
+                },
+                vatId: {
+                    value: '',
+                    rules: ['required','fiveplus']
+                },
+                address: {
+                    value: '',
+                    rules: ['required','fiveplus']
+                },
+                houseCode: {
+                    value: '',
+                    rules: ['required','fiveplus']
+                },
+                city: {
+                    value: '',
+                    rules: ['required','fiveplus']
+                },
+                zipCode: {
+                    value: '',
+                    rules: ['required','fiveplus']
+                },
+                phone: {
+                    value: '',
+                    rules: ['required','fiveplus']
+                }
             })
         };
-  }
+    }
 }
 </script>
 

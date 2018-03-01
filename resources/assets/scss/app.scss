@@ -162,6 +162,14 @@ body {
 	position: fixed;
 	transform: translateX(100%);
 	opacity: 0; 
+
+	.cart-main-tittle {
+			font-size: 32px;
+    	font-weight: 700;
+		span {
+			font-weight: 300;
+		}
+	}
 	
 	.cart-holder {
 		width: 50%;

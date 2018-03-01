@@ -2,7 +2,7 @@
     <div id="shopping-cart" :class="{ active: isVisible }" @click="hideCart">
         <div class="cart-holder" @click.stop>
             <div class="inner-holder">  
-                <h1>Košík</h1>          
+                <h2 class="cart-main-tittle">Košík <span>/ Obsah</span></h2>          
                 <ul class="cart-setps">
                     <li v-for="step in stepsArr" :key="step.component" @click="currentStep = step.component">{{step.label}}</li>
                 </ul>

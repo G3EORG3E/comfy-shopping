@@ -201,6 +201,15 @@ body {
   opacity: 0;
 }
 
+#shopping-cart .cart-main-tittle {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+#shopping-cart .cart-main-tittle span {
+  font-weight: 300;
+}
+
 #shopping-cart .cart-holder {
   width: 50%;
   height: 100%;
