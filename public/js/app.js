@@ -180,8 +180,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            isVisible: false,
-            currentStep: 'cart-product-list',
+            isVisible: true,
+            currentStep: 'cart-contact-info',
             currentStepBtn: '',
             stepsArr: [{ component: 'cart-product-list', label: 'Košík', nextBtn: 'Kontaktní údaje', isActive: true }, { component: 'cart-contact-info', label: 'Osboní údaje', nextBtn: 'Vybrat dopravu', isActive: true }, { component: 'cart-delivery-info', label: 'Doprava', nextBtn: 'Vybrat platbu', isActive: true }, { component: 'cart-payment-info', label: 'Platba', nextBtn: 'Konec', isActive: true }]
         };
@@ -232,153 +232,324 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
-var Errors = function () {
-    function Errors() {
-        _classCallCheck(this, Errors);
+var Validation = function () {
+	function Validation() {
+		_classCallCheck(this, Validation);
+	}
 
-        this.errors = {};
-    }
+	_createClass(Validation, null, [{
+		key: 'required',
+		value: function required(value) {
+			return !!value.length;
+		}
+	}, {
+		key: 'min',
+		value: function min(value, _min) {
+			return value.length >= _min;
+		}
+	}]);
 
-    _createClass(Errors, [{
-        key: 'isValid',
-        value: function isValid() {}
-    }]);
-
-    return Errors;
+	return Validation;
 }();
 
 var Form = function () {
-    function Form(data) {
-        _classCallCheck(this, Form);
+	// data expect this object: {filedName:{value:"",rules:[],errorMsg: ""},...}
+	function Form(data) {
+		_classCallCheck(this, Form);
 
-        this.initialData = data;
+		this.fieldAttrs = [];
+		this.invalidFields = new Set();
 
-        for (var field in data) {
-            this[field] = data[field].value;
-        }
+		for (var field in data) {
+			this[field] = {};
+			this[field].value = data[field].hasOwnProperty('value') ? data[field].value : '';
+			this[field].rules = data[field].hasOwnProperty('rules') ? data[field].rules : [];
+			this[field].errorMessage = data[field].hasOwnProperty('errorMessage') ? data[field].errorMessage : "Default Message";
+			this[field].isValid = true;
 
-        this.errors = new Errors();
-    }
+			this.fieldAttrs.push(field);
+		}
+	}
 
-    _createClass(Form, [{
-        key: 'data',
-        value: function data() {
-            var data = {};
+	_createClass(Form, [{
+		key: 'data',
+		value: function data() {
+			var data = {};
 
-            for (var property in this.initialData) {
-                data[property] = this[property];
-            }
+			var _iteratorNormalCompletion = true;
+			var _didIteratorError = false;
+			var _iteratorError = undefined;
 
-            return data;
-        }
-    }, {
-        key: 'hasError',
-        value: function hasError() {
-            return false;
-        }
-    }, {
-        key: 'validate',
-        value: function validate(property) {
+			try {
+				for (var _iterator = this.fieldAttrs[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+					var property = _step.value;
 
-            var validObj = {
-                reuired: function reuired(value) {
-                    return !!value.length;
-                },
-                fiveplus: function fiveplus(value) {
-                    return value.length >= 5;
-                }
-            };
+					data[property] = this[property].value;
+				}
+			} catch (err) {
+				_didIteratorError = true;
+				_iteratorError = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion && _iterator.return) {
+						_iterator.return();
+					}
+				} finally {
+					if (_didIteratorError) {
+						throw _iteratorError;
+					}
+				}
+			}
 
-            var valid = true;
+			return data;
+		}
+	}, {
+		key: 'getErrors',
+		value: function getErrors() {
+			var data = {};
 
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
+			var _iteratorNormalCompletion2 = true;
+			var _didIteratorError2 = false;
+			var _iteratorError2 = undefined;
 
-            try {
-                for (var _iterator = this.initialData[property][rules][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var rule = _step.value;
+			try {
+				for (var _iterator2 = this.invalidFields[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+					var property = _step2.value;
 
-                    if (validObj.hasOwnProperty(rule)) {
-                        valid = valid && validObj[rule](this[property]);
-                        if (valid == false) break;
-                    }
-                }
+					data[property] = this[property].errorMessage;
+				}
+			} catch (err) {
+				_didIteratorError2 = true;
+				_iteratorError2 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion2 && _iterator2.return) {
+						_iterator2.return();
+					}
+				} finally {
+					if (_didIteratorError2) {
+						throw _iteratorError2;
+					}
+				}
+			}
 
-                //console.log(valid);
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
-        }
-    }]);
+			return data;
+		}
+	}, {
+		key: 'validate',
+		value: function validate(property) {
 
-    return Form;
+			var valid = true;
+			var propertyValue = this[property].value;
+
+			var _iteratorNormalCompletion3 = true;
+			var _didIteratorError3 = false;
+			var _iteratorError3 = undefined;
+
+			try {
+				for (var _iterator3 = this[property].rules[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+					var rule = _step3.value;
+
+					var ruleParts = rule.split(':');
+					var ruleMethod = ruleParts[0];
+					var ruleArg = ruleParts[1];
+
+					if (ruleMethod == 'if') {
+						var ifArgs = ruleArg.split('@');
+
+						if (this[ifArgs[0]].value == ifArgs[1]) continue;else valid = true;break;
+					}
+
+					if (Validation.hasOwnProperty(ruleParts[0])) {
+						var validStep = ruleParts.length == 1 ? Validation[ruleMethod](propertyValue) : Validation[ruleMethod](propertyValue, ruleArg);
+						valid = valid && validStep;
+						if (valid == false) break;
+					}
+				}
+			} catch (err) {
+				_didIteratorError3 = true;
+				_iteratorError3 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion3 && _iterator3.return) {
+						_iterator3.return();
+					}
+				} finally {
+					if (_didIteratorError3) {
+						throw _iteratorError3;
+					}
+				}
+			}
+
+			if (!valid) {
+				this[property].isValid = false;
+				this.invalidFields.add(property);
+			} else {
+				this[property].isValid = true;
+				this.invalidFields.delete(property);
+			}
+		}
+	}, {
+		key: 'validateAll',
+		value: function validateAll() {
+			var _iteratorNormalCompletion4 = true;
+			var _didIteratorError4 = false;
+			var _iteratorError4 = undefined;
+
+			try {
+				for (var _iterator4 = this.fieldAttrs[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+					var property = _step4.value;
+
+					this.validate(property);
+				}
+			} catch (err) {
+				_didIteratorError4 = true;
+				_iteratorError4 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion4 && _iterator4.return) {
+						_iterator4.return();
+					}
+				} finally {
+					if (_didIteratorError4) {
+						throw _iteratorError4;
+					}
+				}
+			}
+		}
+	}, {
+		key: 'isValid',
+		value: function isValid() {
+			this.validateAll();
+
+			if (this.invalidFields.size > 0) return false;
+
+			return true;
+		}
+	}, {
+		key: 'proccesServerErrors',
+		value: function proccesServerErrors(invalidFields) {
+
+			console.log(invalidFields);
+
+			for (var error in invalidFields) {
+				console.log(error);
+				//data[property] = this[property].errorMessage;            
+			}
+		}
+	}, {
+		key: 'submit',
+		value: function submit(method, url) {
+			var _this = this;
+
+			return new Promise(function (resolve, reject) {
+
+				if (_this.isValid()) {
+					fetch(url, {
+						method: 'POST',
+						body: _this.data()
+					}).then(function (response) {
+						if (response.ok) {
+							response.json().then(function (data) {
+								resolve(data);
+							});
+						} else {
+							response.json().then(function (errs) {
+								_this.proccesServerErrors(errs);
+								reject(errs);
+							});
+						}
+					});
+				} else {
+					reject(_this.getErrors());
+				}
+			});
+		}
+	}, {
+		key: 'post',
+		value: function post(url) {
+			return this.submit('POST', url);
+		}
+	}]);
+
+	return Form;
 }();
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            form: new Form({
-                email: {
-                    value: 'asd',
-                    rules: ['required', 'fiveplus']
-                },
-                firstName: {
-                    value: '',
-                    rules: ['required', 'fiveplus']
-                },
-                surName: {
-                    value: '',
-                    rules: ['required', 'fiveplus']
-                },
-                company: {
-                    value: '',
-                    rules: ['required', 'fiveplus']
-                },
-                id: {
-                    value: '',
-                    rules: ['required', 'fiveplus']
-                },
-                vatId: {
-                    value: '',
-                    rules: ['required', 'fiveplus']
-                },
-                address: {
-                    value: '',
-                    rules: ['required', 'fiveplus']
-                },
-                houseCode: {
-                    value: '',
-                    rules: ['required', 'fiveplus']
-                },
-                city: {
-                    value: '',
-                    rules: ['required', 'fiveplus']
-                },
-                zipCode: {
-                    value: '',
-                    rules: ['required', 'fiveplus']
-                },
-                phone: {
-                    value: '',
-                    rules: ['required', 'fiveplus']
-                }
-            })
-        };
-    }
+	data: function data() {
+		return {
+			form: new Form({
+				email: {
+					value: 'asd',
+					rules: ['min:3', 'required'],
+					errorMessage: "Toto pole je povinné"
+				},
+				choosenEntity: {
+					value: 'private',
+					rules: ['required']
+				},
+				firstName: {
+					rules: ['if:choosenEntity@private', 'required']
+				},
+				surName: {},
+				company: {
+					rules: ['if:choosenEntity@legal', 'required']
+				},
+				id: {},
+				vatId: {},
+				address: {},
+				houseCode: {},
+				city: {},
+				zipCode: {},
+				phone: {}
+			}),
+			isCorrect: false
+		};
+	},
+
+	methods: {
+		submitForm: function submitForm() {
+			var _this2 = this;
+
+			//this.form.post('/data/form-correct.json')
+			this.form.post('/data/form-incorrect.php').then(function (data) {
+				_this2.isCorrect = true;
+			}).catch(function (errors) {
+				_this2.isCorrect = false;
+			});
+		}
+	}
 });
 
 /***/ }),
@@ -3840,39 +4011,174 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { attrs: { id: "cart-contact-info" } }, [
-    _c("div", { staticClass: "form-item" }, [
-      _c("div", { staticClass: "input-holder" }, [
-        _c("label", [_vm._v("E-mail")]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.form.email.value,
-              expression: "form.email.value"
-            }
-          ],
-          attrs: { type: "text" },
-          domProps: { value: _vm.form.email.value },
-          on: {
-            keyup: function($event) {
-              _vm.form.validate("email")
-            },
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.$set(_vm.form.email, "value", $event.target.value)
-            }
+    _c(
+      "form",
+      {
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            _vm.submitForm($event)
+          },
+          keyup: function($event) {
+            _vm.form.validate($event.target.name)
           }
-        })
-      ]),
-      _vm._v(" "),
-      _vm.form.hasError("email")
-        ? _c("div", { staticClass: "error" }, [_vm._v("Msg")])
-        : _vm._e()
-    ])
+        }
+      },
+      [
+        _c("div", { staticClass: "form-item" }, [
+          _c("div", { staticClass: "input-holder" }, [
+            _c("label", [_vm._v("E-mail")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.form.email.value,
+                  expression: "form.email.value"
+                }
+              ],
+              attrs: { type: "text", name: "email" },
+              domProps: { value: _vm.form.email.value },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.form.email, "value", $event.target.value)
+                }
+              }
+            }),
+            _vm._v(" "),
+            !_vm.form.email.isValid
+              ? _c("div", [_vm._v(_vm._s(_vm.form.email.errorMessage))])
+              : _vm._e()
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-item" }, [
+          _c("div", { staticClass: "input-holder" }, [
+            _c("div", [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.form.choosenEntity.value,
+                    expression: "form.choosenEntity.value"
+                  }
+                ],
+                attrs: { type: "radio", id: "one", value: "private" },
+                domProps: {
+                  checked: _vm._q(_vm.form.choosenEntity.value, "private")
+                },
+                on: {
+                  change: function($event) {
+                    _vm.$set(_vm.form.choosenEntity, "value", "private")
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("label", { attrs: { for: "one" } }, [
+                _vm._v("Koncový zákazník")
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.form.choosenEntity.value,
+                    expression: "form.choosenEntity.value"
+                  }
+                ],
+                attrs: { type: "radio", id: "two", value: "legal" },
+                domProps: {
+                  checked: _vm._q(_vm.form.choosenEntity.value, "legal")
+                },
+                on: {
+                  change: function($event) {
+                    _vm.$set(_vm.form.choosenEntity, "value", "legal")
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("label", { attrs: { for: "two" } }, [_vm._v("Firma")])
+            ])
+          ])
+        ]),
+        _vm._v(" "),
+        _vm.form.choosenEntity.value == "private"
+          ? _c("div", { staticClass: "form-item" }, [
+              _c("div", { staticClass: "input-holder" }, [
+                _c("label", [_vm._v("Jméno")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.form.firstName.value,
+                      expression: "form.firstName.value"
+                    }
+                  ],
+                  attrs: { type: "text", name: "firstName" },
+                  domProps: { value: _vm.form.firstName.value },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.form.firstName, "value", $event.target.value)
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                !_vm.form.firstName.isValid
+                  ? _c("div", [_vm._v(_vm._s(_vm.form.firstName.errorMessage))])
+                  : _vm._e()
+              ])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.form.choosenEntity.value == "legal"
+          ? _c("div", { staticClass: "form-item" }, [
+              _c("div", { staticClass: "input-holder" }, [
+                _c("label", [_vm._v("Firma")]),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.form.company.value,
+                      expression: "form.company.value"
+                    }
+                  ],
+                  attrs: { type: "text", name: "company" },
+                  domProps: { value: _vm.form.company.value },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.form.company, "value", $event.target.value)
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                !_vm.form.company.isValid
+                  ? _c("div", [_vm._v(_vm._s(_vm.form.firstName.errorMessage))])
+                  : _vm._e()
+              ])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _c("input", { attrs: { type: "submit", value: "send me beeatch" } })
+      ]
+    )
   ])
 }
 var staticRenderFns = []

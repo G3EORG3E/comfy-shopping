@@ -30,8 +30,8 @@ import cartPaymentInfo from './cart-steps/CartPaymentInfo.vue';
 export default {
     data() {
         return {
-            isVisible: false,
-            currentStep: 'cart-product-list',
+            isVisible: true,
+            currentStep: 'cart-contact-info',
             currentStepBtn: '',
             stepsArr: [
                 {component:'cart-product-list', label: 'Košík', nextBtn: 'Kontaktní údaje', isActive: true},
