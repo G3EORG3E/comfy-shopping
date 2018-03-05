@@ -5,7 +5,7 @@ import cartStatus from './components/CartStatus.vue';
 
 window.EventBus = new Vue();
 
-new Vue({
+let app = new Vue({
     el: '#root',
     components: {      
         productItem,

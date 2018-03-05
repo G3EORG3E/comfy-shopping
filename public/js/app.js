@@ -180,13 +180,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            isVisible: true,
-            currentStep: 'cart-contact-info',
-            currentStepBtn: '',
-            stepsArr: [{ component: 'cart-product-list', label: 'Košík', nextBtn: 'Kontaktní údaje', isActive: true }, { component: 'cart-contact-info', label: 'Osboní údaje', nextBtn: 'Vybrat dopravu', isActive: true }, { component: 'cart-delivery-info', label: 'Doprava', nextBtn: 'Vybrat platbu', isActive: true }, { component: 'cart-payment-info', label: 'Platba', nextBtn: 'Konec', isActive: true }]
+            isVisible: false,
+            currentStep: {},
+            stepsArr: [{ component: 'cart-product-list', label: 'Košík', nextBtn: 'Osobní údaje', nextAccess: true }, { component: 'cart-contact-info', label: 'Osboní údaje', nextBtn: 'Vybrat dopravu', nextAccess: false }, { component: 'cart-delivery-info', label: 'Doprava', nextBtn: 'Vybrat platbu', nextAccess: false }, { component: 'cart-payment-info', label: 'Platba', nextBtn: 'Dokončit objednávku', nextAccess: false }],
+            aliveComponents: []
         };
     },
     created: function created() {
+        this.currentStep = this.stepsArr[0];
+        this.aliveComponents.push(this.stepsArr[0].component);
         EventBus.$on('show-cart', this.showCart);
     },
 
@@ -205,7 +207,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.isVisible = false;
             document.getElementById('page-grid').classList.remove('active-cart');
         },
-        moveNext: function moveNext() {}
+        processStep: function processStep(step) {
+            var index = this.stepsArr.indexOf(step);
+            console.log(index);
+            this.currentStep = step;
+        },
+        nextStep: function nextStep() {
+            var indexCurrent = this.stepsArr.indexOf(this.currentStep);
+
+            if (this.stepsArr[indexCurrent].nextAccess) {
+                this.currentStep = this.stepsArr[indexCurrent + 1];
+            }
+        }
     }
 });
 
@@ -261,6 +274,137 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 var Validation = function () {
@@ -274,9 +418,20 @@ var Validation = function () {
 			return !!value.length;
 		}
 	}, {
+		key: 'email',
+		value: function email(value) {
+			var pattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+			return pattern.test(value);
+		}
+	}, {
 		key: 'min',
 		value: function min(value, _min) {
 			return value.length >= _min;
+		}
+	}, {
+		key: 'max',
+		value: function max(value, min) {
+			return value.length <= min;
 		}
 	}]);
 
@@ -509,11 +664,11 @@ var Form = function () {
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function data() {
 		return {
+			countries: ['Česká Republika', 'Slovenská Republka'],
 			form: new Form({
 				email: {
-					value: 'asd',
-					rules: ['min:3', 'required'],
-					errorMessage: "Toto pole je povinné"
+					rules: ['email', 'required'],
+					errorMessage: "Zadejte realný email"
 				},
 				choosenEntity: {
 					value: 'private',
@@ -526,13 +681,32 @@ var Form = function () {
 				company: {
 					rules: ['if:choosenEntity@legal', 'required']
 				},
-				id: {},
+				companyId: {},
 				vatId: {},
 				address: {},
 				houseCode: {},
 				city: {},
+				country: {
+					rules: ['required']
+				},
 				zipCode: {},
-				phone: {}
+				phone: {},
+				createAccount: {},
+				password: {},
+				rePassword: {
+					rules: ['match:password']
+				},
+				sendElseWhere: {},
+				deliveryFirstName: {
+					rules: ['if:sendElseWhere@true', 'required']
+				},
+				deliverySurName: {},
+				deliveryCompany: {},
+				deliveryAddress: {},
+				deliveryHouseCode: {},
+				deliveryCity: {},
+				deliveryCountry: {},
+				deliveryZipCode: {}
 			}),
 			isCorrect: false
 		};
@@ -4025,153 +4199,1058 @@ var render = function() {
         }
       },
       [
-        _c("div", { staticClass: "form-item" }, [
-          _c("div", { staticClass: "input-holder" }, [
-            _c("label", [_vm._v("E-mail")]),
-            _vm._v(" "),
+        _c("div", { staticClass: "form-row" }, [
+          _c(
+            "div",
+            {
+              staticClass: "form-col col-1",
+              class: { hasError: !_vm.form.email.isValid }
+            },
+            [
+              _c("label", [_vm._v("E-mail")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.form.email.value,
+                    expression: "form.email.value"
+                  }
+                ],
+                attrs: { type: "text", name: "email" },
+                domProps: { value: _vm.form.email.value },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.form.email, "value", $event.target.value)
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-error" }, [
+                _vm._v(_vm._s(_vm.form.email.errorMessage))
+              ])
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-row" }, [
+          _c("div", { staticClass: "form-col col-2" }, [
             _c("input", {
               directives: [
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.form.email.value,
-                  expression: "form.email.value"
+                  value: _vm.form.choosenEntity.value,
+                  expression: "form.choosenEntity.value"
                 }
               ],
-              attrs: { type: "text", name: "email" },
-              domProps: { value: _vm.form.email.value },
+              attrs: { type: "radio", id: "one", value: "private" },
+              domProps: {
+                checked: _vm._q(_vm.form.choosenEntity.value, "private")
+              },
               on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.form.email, "value", $event.target.value)
+                change: function($event) {
+                  _vm.$set(_vm.form.choosenEntity, "value", "private")
                 }
               }
             }),
             _vm._v(" "),
-            !_vm.form.email.isValid
-              ? _c("div", [_vm._v(_vm._s(_vm.form.email.errorMessage))])
-              : _vm._e()
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-item" }, [
-          _c("div", { staticClass: "input-holder" }, [
-            _c("div", [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.form.choosenEntity.value,
-                    expression: "form.choosenEntity.value"
-                  }
-                ],
-                attrs: { type: "radio", id: "one", value: "private" },
-                domProps: {
-                  checked: _vm._q(_vm.form.choosenEntity.value, "private")
-                },
-                on: {
-                  change: function($event) {
-                    _vm.$set(_vm.form.choosenEntity, "value", "private")
-                  }
+            _c("label", { attrs: { for: "one" } }, [_vm._v("Koncový zákazník")])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-col col-2" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.form.choosenEntity.value,
+                  expression: "form.choosenEntity.value"
                 }
-              }),
-              _vm._v(" "),
-              _c("label", { attrs: { for: "one" } }, [
-                _vm._v("Koncový zákazník")
-              ])
-            ]),
+              ],
+              attrs: { type: "radio", id: "two", value: "legal" },
+              domProps: {
+                checked: _vm._q(_vm.form.choosenEntity.value, "legal")
+              },
+              on: {
+                change: function($event) {
+                  _vm.$set(_vm.form.choosenEntity, "value", "legal")
+                }
+              }
+            }),
             _vm._v(" "),
-            _c("div", [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.form.choosenEntity.value,
-                    expression: "form.choosenEntity.value"
-                  }
-                ],
-                attrs: { type: "radio", id: "two", value: "legal" },
-                domProps: {
-                  checked: _vm._q(_vm.form.choosenEntity.value, "legal")
-                },
-                on: {
-                  change: function($event) {
-                    _vm.$set(_vm.form.choosenEntity, "value", "legal")
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _c("label", { attrs: { for: "two" } }, [_vm._v("Firma")])
-            ])
+            _c("label", { attrs: { for: "two" } }, [_vm._v("Firma")])
           ])
         ]),
         _vm._v(" "),
         _vm.form.choosenEntity.value == "private"
-          ? _c("div", { staticClass: "form-item" }, [
-              _c("div", { staticClass: "input-holder" }, [
-                _c("label", [_vm._v("Jméno")]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.form.firstName.value,
-                      expression: "form.firstName.value"
-                    }
-                  ],
-                  attrs: { type: "text", name: "firstName" },
-                  domProps: { value: _vm.form.firstName.value },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+          ? _c("div", { staticClass: "form-row" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "form-col col-2",
+                  class: { hasError: !_vm.form.firstName.isValid }
+                },
+                [
+                  _c("label", [_vm._v("Jméno")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.firstName.value,
+                        expression: "form.firstName.value"
                       }
-                      _vm.$set(_vm.form.firstName, "value", $event.target.value)
+                    ],
+                    attrs: { type: "text", name: "firstName" },
+                    domProps: { value: _vm.form.firstName.value },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(
+                          _vm.form.firstName,
+                          "value",
+                          $event.target.value
+                        )
+                      }
                     }
-                  }
-                }),
-                _vm._v(" "),
-                !_vm.form.firstName.isValid
-                  ? _c("div", [_vm._v(_vm._s(_vm.form.firstName.errorMessage))])
-                  : _vm._e()
-              ])
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-error" }, [
+                    _vm._v(_vm._s(_vm.form.firstName.errorMessage))
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "form-col col-2",
+                  class: { hasError: !_vm.form.surName.isValid }
+                },
+                [
+                  _c("label", [_vm._v("Příjmení")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.surName.value,
+                        expression: "form.surName.value"
+                      }
+                    ],
+                    attrs: { type: "text", name: "surName" },
+                    domProps: { value: _vm.form.surName.value },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.form.surName, "value", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-error" }, [
+                    _vm._v(_vm._s(_vm.form.surName.errorMessage))
+                  ])
+                ]
+              )
             ])
           : _vm._e(),
         _vm._v(" "),
         _vm.form.choosenEntity.value == "legal"
-          ? _c("div", { staticClass: "form-item" }, [
-              _c("div", { staticClass: "input-holder" }, [
-                _c("label", [_vm._v("Firma")]),
-                _vm._v(" "),
-                _c("input", {
+          ? _c("div", { staticClass: "form-row" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "form-col col-1",
+                  class: { hasError: !_vm.form.company.isValid }
+                },
+                [
+                  _c("label", [_vm._v("Firma")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.company.value,
+                        expression: "form.company.value"
+                      }
+                    ],
+                    attrs: { type: "text", name: "company" },
+                    domProps: { value: _vm.form.company.value },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.form.company, "value", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-error" }, [
+                    _vm._v(_vm._s(_vm.form.company.errorMessage))
+                  ])
+                ]
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.form.choosenEntity.value == "legal"
+          ? _c("div", { staticClass: "form-row" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "form-col col-2",
+                  class: { hasError: !_vm.form.companyId.isValid }
+                },
+                [
+                  _c("label", [_vm._v("IČ")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.companyId.value,
+                        expression: "form.companyId.value"
+                      }
+                    ],
+                    attrs: { type: "text", name: "companyId" },
+                    domProps: { value: _vm.form.companyId.value },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(
+                          _vm.form.companyId,
+                          "value",
+                          $event.target.value
+                        )
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-error" }, [
+                    _vm._v(_vm._s(_vm.form.companyId.errorMessage))
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "form-col col-2",
+                  class: { hasError: !_vm.form.vatId.isValid }
+                },
+                [
+                  _c("label", [_vm._v("DIČ")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.vatId.value,
+                        expression: "form.vatId.value"
+                      }
+                    ],
+                    attrs: { type: "text", name: "vatId" },
+                    domProps: { value: _vm.form.vatId.value },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.form.vatId, "value", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-error" }, [
+                    _vm._v(_vm._s(_vm.form.vatId.errorMessage))
+                  ])
+                ]
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-row" }, [
+          _c(
+            "div",
+            {
+              staticClass: "form-col col-2",
+              class: { hasError: !_vm.form.address.isValid }
+            },
+            [
+              _c("label", [_vm._v("Adresa")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.form.address.value,
+                    expression: "form.address.value"
+                  }
+                ],
+                attrs: { type: "text", name: "address" },
+                domProps: { value: _vm.form.address.value },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.form.address, "value", $event.target.value)
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-error" }, [
+                _vm._v(_vm._s(_vm.form.address.errorMessage))
+              ])
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "form-col col-2",
+              class: { hasError: !_vm.form.houseCode.isValid }
+            },
+            [
+              _c("label", [_vm._v("č.p.")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.form.houseCode.value,
+                    expression: "form.houseCode.value"
+                  }
+                ],
+                attrs: { type: "text", name: "houseCode" },
+                domProps: { value: _vm.form.houseCode.value },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.form.houseCode, "value", $event.target.value)
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-error" }, [
+                _vm._v(_vm._s(_vm.form.houseCode.errorMessage))
+              ])
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-row" }, [
+          _c(
+            "div",
+            {
+              staticClass: "form-col col-1",
+              class: { hasError: !_vm.form.city.isValid }
+            },
+            [
+              _c("label", [_vm._v("Město")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.form.city.value,
+                    expression: "form.city.value"
+                  }
+                ],
+                attrs: { type: "text", name: "city" },
+                domProps: { value: _vm.form.city.value },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.form.city, "value", $event.target.value)
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-error" }, [
+                _vm._v(_vm._s(_vm.form.city.errorMessage))
+              ])
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-row" }, [
+          _c(
+            "div",
+            {
+              staticClass: "form-col col-2",
+              class: { hasError: !_vm.form.country.isValid }
+            },
+            [
+              _c("label", [_vm._v("Stát")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
                   directives: [
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.form.company.value,
-                      expression: "form.company.value"
+                      value: _vm.form.country.value,
+                      expression: "form.country.value"
                     }
                   ],
-                  attrs: { type: "text", name: "company" },
-                  domProps: { value: _vm.form.company.value },
                   on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.$set(_vm.form.company, "value", $event.target.value)
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.form.country,
+                        "value",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
                     }
                   }
-                }),
+                },
+                _vm._l(_vm.countries, function(country) {
+                  return _c("option", {
+                    key: country,
+                    domProps: { textContent: _vm._s(country) }
+                  })
+                })
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "form-col col-2",
+              class: { hasError: !_vm.form.zipCode.isValid }
+            },
+            [
+              _c("label", [_vm._v("PSČ")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.form.zipCode.value,
+                    expression: "form.zipCode.value"
+                  }
+                ],
+                attrs: { type: "text", name: "zipCode" },
+                domProps: { value: _vm.form.zipCode.value },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.form.zipCode, "value", $event.target.value)
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-error" }, [
+                _vm._v(_vm._s(_vm.form.zipCode.errorMessage))
+              ])
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-row" }, [
+          _c(
+            "div",
+            {
+              staticClass: "form-col col-1",
+              class: { hasError: !_vm.form.phone.isValid }
+            },
+            [
+              _c("label", [_vm._v("Telefon:")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.form.phone.value,
+                    expression: "form.phone.value"
+                  }
+                ],
+                attrs: { type: "text", name: "phone" },
+                domProps: { value: _vm.form.phone.value },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.form.phone, "value", $event.target.value)
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-error" }, [
+                _vm._v(_vm._s(_vm.form.phone.errorMessage))
+              ])
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-row" }, [
+          _c("div", { staticClass: "form-col col-1" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.form.createAccount.value,
+                  expression: "form.createAccount.value"
+                }
+              ],
+              attrs: {
+                type: "checkbox",
+                name: "createAccount",
+                id: "createAcountCheck"
+              },
+              domProps: {
+                checked: Array.isArray(_vm.form.createAccount.value)
+                  ? _vm._i(_vm.form.createAccount.value, null) > -1
+                  : _vm.form.createAccount.value
+              },
+              on: {
+                change: function($event) {
+                  var $$a = _vm.form.createAccount.value,
+                    $$el = $event.target,
+                    $$c = $$el.checked ? true : false
+                  if (Array.isArray($$a)) {
+                    var $$v = null,
+                      $$i = _vm._i($$a, $$v)
+                    if ($$el.checked) {
+                      $$i < 0 &&
+                        (_vm.form.createAccount.value = $$a.concat([$$v]))
+                    } else {
+                      $$i > -1 &&
+                        (_vm.form.createAccount.value = $$a
+                          .slice(0, $$i)
+                          .concat($$a.slice($$i + 1)))
+                    }
+                  } else {
+                    _vm.$set(_vm.form.createAccount, "value", $$c)
+                  }
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("label", { attrs: { for: "createAcountCheck" } }, [
+              _vm._v("Vytvořit účet pro pozdější použití")
+            ])
+          ])
+        ]),
+        _vm._v(" "),
+        _vm.form.createAccount.value
+          ? _c("div", { staticClass: "form-row" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "form-col col-2",
+                  class: { hasError: !_vm.form.password.isValid }
+                },
+                [
+                  _c("label", [_vm._v("Heslo")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.password.value,
+                        expression: "form.password.value"
+                      }
+                    ],
+                    attrs: { type: "password", name: "password" },
+                    domProps: { value: _vm.form.password.value },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(
+                          _vm.form.password,
+                          "value",
+                          $event.target.value
+                        )
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-error" }, [
+                    _vm._v(_vm._s(_vm.form.password.errorMessage))
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "form-col col-2",
+                  class: { hasError: !_vm.form.rePassword.isValid }
+                },
+                [
+                  _c("label", [_vm._v("Heslo znovu")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.rePassword.value,
+                        expression: "form.rePassword.value"
+                      }
+                    ],
+                    attrs: { type: "password", name: "rePassword" },
+                    domProps: { value: _vm.form.rePassword.value },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(
+                          _vm.form.rePassword,
+                          "value",
+                          $event.target.value
+                        )
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-error" }, [
+                    _vm._v(_vm._s(_vm.form.rePassword.errorMessage))
+                  ])
+                ]
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-row" }, [
+          _c("div", { staticClass: "form-col col-1" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.form.sendElseWhere.value,
+                  expression: "form.sendElseWhere.value"
+                }
+              ],
+              attrs: {
+                type: "checkbox",
+                name: "sendElseWhere",
+                id: "sendElseWhereCheck"
+              },
+              domProps: {
+                checked: Array.isArray(_vm.form.sendElseWhere.value)
+                  ? _vm._i(_vm.form.sendElseWhere.value, null) > -1
+                  : _vm.form.sendElseWhere.value
+              },
+              on: {
+                change: function($event) {
+                  var $$a = _vm.form.sendElseWhere.value,
+                    $$el = $event.target,
+                    $$c = $$el.checked ? true : false
+                  if (Array.isArray($$a)) {
+                    var $$v = null,
+                      $$i = _vm._i($$a, $$v)
+                    if ($$el.checked) {
+                      $$i < 0 &&
+                        (_vm.form.sendElseWhere.value = $$a.concat([$$v]))
+                    } else {
+                      $$i > -1 &&
+                        (_vm.form.sendElseWhere.value = $$a
+                          .slice(0, $$i)
+                          .concat($$a.slice($$i + 1)))
+                    }
+                  } else {
+                    _vm.$set(_vm.form.sendElseWhere, "value", $$c)
+                  }
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("label", { attrs: { for: "sendElseWhereCheck" } }, [
+              _vm._v("Doručit na jinou adresu")
+            ])
+          ])
+        ]),
+        _vm._v(" "),
+        _vm.form.sendElseWhere.value
+          ? _c("div", [
+              _c("div", { staticClass: "form-row" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "form-col col-2",
+                    class: { hasError: !_vm.form.deliveryFirstName.isValid }
+                  },
+                  [
+                    _c("label", [_vm._v("Jméno")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.deliveryFirstName.value,
+                          expression: "form.deliveryFirstName.value"
+                        }
+                      ],
+                      attrs: { type: "text", name: "deliveryFirstName" },
+                      domProps: { value: _vm.form.deliveryFirstName.value },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.form.deliveryFirstName,
+                            "value",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-error" }, [
+                      _vm._v(_vm._s(_vm.form.deliveryFirstName.errorMessage))
+                    ])
+                  ]
+                ),
                 _vm._v(" "),
-                !_vm.form.company.isValid
-                  ? _c("div", [_vm._v(_vm._s(_vm.form.firstName.errorMessage))])
-                  : _vm._e()
+                _c(
+                  "div",
+                  {
+                    staticClass: "form-col col-2",
+                    class: { hasError: !_vm.form.deliverySurName.isValid }
+                  },
+                  [
+                    _c("label", [_vm._v("Příjmení")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.deliverySurName.value,
+                          expression: "form.deliverySurName.value"
+                        }
+                      ],
+                      attrs: { type: "text", name: "deliverySurName" },
+                      domProps: { value: _vm.form.deliverySurName.value },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.form.deliverySurName,
+                            "value",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-error" }, [
+                      _vm._v(_vm._s(_vm.form.deliverySurName.errorMessage))
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-row" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "form-col col-1",
+                    class: { hasError: !_vm.form.deliveryCompany.isValid }
+                  },
+                  [
+                    _c("label", [_vm._v("Firma")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.deliveryCompany.value,
+                          expression: "form.deliveryCompany.value"
+                        }
+                      ],
+                      attrs: { type: "text", name: "deliveryCompany" },
+                      domProps: { value: _vm.form.deliveryCompany.value },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.form.deliveryCompany,
+                            "value",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-error" }, [
+                      _vm._v(_vm._s(_vm.form.deliveryCompany.errorMessage))
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-row" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "form-col col-2",
+                    class: { hasError: !_vm.form.deliveryAddress.isValid }
+                  },
+                  [
+                    _c("label", [_vm._v("Adresa")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.deliveryAddress.value,
+                          expression: "form.deliveryAddress.value"
+                        }
+                      ],
+                      attrs: { type: "text", name: "deliveryAddress" },
+                      domProps: { value: _vm.form.deliveryAddress.value },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.form.deliveryAddress,
+                            "value",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-error" }, [
+                      _vm._v(_vm._s(_vm.form.deliveryAddress.errorMessage))
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "form-col col-2",
+                    class: { hasError: !_vm.form.deliveryHouseCode.isValid }
+                  },
+                  [
+                    _c("label", [_vm._v("č.p.")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.deliveryHouseCode.value,
+                          expression: "form.deliveryHouseCode.value"
+                        }
+                      ],
+                      attrs: { type: "text", name: "deliveryHouseCode" },
+                      domProps: { value: _vm.form.deliveryHouseCode.value },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.form.deliveryHouseCode,
+                            "value",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-error" }, [
+                      _vm._v(_vm._s(_vm.form.deliveryHouseCode.errorMessage))
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-row" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "form-col col-1",
+                    class: { hasError: !_vm.form.deliveryCity.isValid }
+                  },
+                  [
+                    _c("label", [_vm._v("Město")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.deliveryCity.value,
+                          expression: "form.deliveryCity.value"
+                        }
+                      ],
+                      attrs: { type: "text", name: "deliveryCity" },
+                      domProps: { value: _vm.form.deliveryCity.value },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.form.deliveryCity,
+                            "value",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-error" }, [
+                      _vm._v(_vm._s(_vm.form.deliveryCity.errorMessage))
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-row" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "form-col col-2",
+                    class: { hasError: !_vm.form.deliveryCountry.isValid }
+                  },
+                  [
+                    _c("label", [_vm._v("Stát")]),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.form.deliveryCountry.value,
+                            expression: "form.deliveryCountry.value"
+                          }
+                        ],
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.$set(
+                              _vm.form.deliveryCountry,
+                              "value",
+                              $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            )
+                          }
+                        }
+                      },
+                      _vm._l(_vm.countries, function(country) {
+                        return _c("option", {
+                          key: country,
+                          domProps: { textContent: _vm._s(country) }
+                        })
+                      })
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "form-col col-2",
+                    class: { hasError: !_vm.form.deliveryZipCode.isValid }
+                  },
+                  [
+                    _c("label", [_vm._v("PSČ")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.deliveryZipCode.value,
+                          expression: "form.deliveryZipCode.value"
+                        }
+                      ],
+                      attrs: { type: "text", name: "deliveryZipCode" },
+                      domProps: { value: _vm.form.deliveryZipCode.value },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.form.deliveryZipCode,
+                            "value",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-error" }, [
+                      _vm._v(_vm._s(_vm.form.deliveryZipCode.errorMessage))
+                    ])
+                  ]
+                )
               ])
             ])
           : _vm._e(),
@@ -4246,7 +5325,16 @@ var render = function() {
             "div",
             { staticClass: "inner-holder" },
             [
-              _vm._m(0),
+              _c("h2", { staticClass: "cart-main-tittle" }, [
+                _c("span", [
+                  _vm._v(
+                    _vm._s(_vm.stepsArr.indexOf(_vm.currentStep) + 1) +
+                      "/" +
+                      _vm._s(_vm.stepsArr.length)
+                  )
+                ]),
+                _vm._v(" " + _vm._s(_vm.currentStep.label))
+              ]),
               _vm._v(" "),
               _c(
                 "ul",
@@ -4258,7 +5346,7 @@ var render = function() {
                       key: step.component,
                       on: {
                         click: function($event) {
-                          _vm.currentStep = step.component
+                          _vm.processStep(step)
                         }
                       }
                     },
@@ -4273,7 +5361,8 @@ var render = function() {
                 [
                   _c(
                     "keep-alive",
-                    [_c(_vm.currentStep, { tag: "component" })],
+                    { attrs: { include: _vm.aliveComponents } },
+                    [_c(_vm.currentStep.component, { tag: "component" })],
                     1
                   )
                 ],
@@ -4281,20 +5370,22 @@ var render = function() {
               ),
               _vm._v(" "),
               _c("div", { staticClass: "bottom-controls" }, [
-                _c(
-                  "a",
-                  {
-                    staticClass: "next-step cart-button ghost",
-                    attrs: { href: "#" },
-                    on: {
-                      click: function($event) {
-                        $event.preventDefault()
-                        _vm.moveNext($event)
-                      }
-                    }
-                  },
-                  [_vm._v("Zpět")]
-                ),
+                _vm.stepsArr.indexOf(_vm.currentStep) != 0
+                  ? _c(
+                      "a",
+                      {
+                        staticClass: "next-step cart-button ghost",
+                        attrs: { href: "#" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            _vm.moveNext($event)
+                          }
+                        }
+                      },
+                      [_vm._v("Zpět")]
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
                 _c(
                   "a",
@@ -4304,11 +5395,11 @@ var render = function() {
                     on: {
                       click: function($event) {
                         $event.preventDefault()
-                        _vm.moveNext($event)
+                        _vm.nextStep($event)
                       }
                     }
                   },
-                  [_vm._v(_vm._s(_vm.currentStepBtn))]
+                  [_vm._v(_vm._s(_vm.currentStep.nextBtn))]
                 )
               ]),
               _vm._v(" "),
@@ -4334,17 +5425,7 @@ var render = function() {
     ]
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h2", { staticClass: "cart-main-tittle" }, [
-      _vm._v("Košík "),
-      _c("span", [_vm._v("/ Obsah")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -15250,7 +16331,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 window.EventBus = new Vue();
 
-new Vue({
+var app = new Vue({
     el: '#root',
     components: {
         productItem: __WEBPACK_IMPORTED_MODULE_2__components_ProductItem_vue___default.a,

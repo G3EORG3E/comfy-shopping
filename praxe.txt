@@ -1,0 +1,85 @@
+﻿Frameworky:
+
+Budu se rozhodovat mezi tzv. "The Big Tree" frameworky, z důvodů velké komunity, velkého množství cvičných vzorů a také k vůli žádanosti těchto frameworků
+
+ANGULAR
++ Použivá TypeScript
++ modularita
++ router
++ form validace
++ Http Client
+
+- složitý na naučení
+- každá nová verze se velmi liší od verze předhcozí
+- Limitovano poze pro  single-page aplikace. Není možnost to jen tak vložit do multi-page aplikace
+
+
+REACT
++ Používá JS ES6
++ Flexibilní, bez problemů spolupracuje s jinýma knihovnama a projektama
+
+- Primárně navrženo   pro SPA
+- složitý na naučení v krátke periodě času pro psaní repezentativního kodu
+- kombinuje JS, HTML a CSS, přimo ve skriptech
+- nepřináší validaci formulářů, routery out of the box
+
+
+Vue.js
++ použiván pro tvorbu interaktivních rozhraní
++ snaží se využívat to nejlepší z obou jak React tak Angularu
++ JS, HTML a CSS nejsou zmixovany dohromady jako u REACTU
++ Je možno použít jak ES5, ES6 tak i TypeScript (může byt težší na zprovoznění)
++ Jednoduše spolupracuje s ostatnima knihovnama i projekty
++ poměrně jednoduchy na naučení (srozumitelná a dobře strukturovaná dokunetace)
++ Flexibilní nenutí žadný přimý postup
+
+- poměrně novy, menší komunita v porovnání s React a Angular
+
+===
+
+
+KOŠÍK
+
+Hodnoty položek, které se mohou v košiku obejvit:
+Standartně:
+- thumbnail
+- název                                                                        
+- množství
+- Cena s DPH
+- varianta
+- Odstranit
+
+Věci navíc:
+- kód produktu
+- cena za kus / Celková cena
+- cena bez DPH
+- Sety a rozpis jednotlivých setů
+- U konfiguratorů rozpis jendotlivych nakonfigurovaných položek
+
+KONTAKTNI UDAJE
+
+Email (Jíž mate učet? přihlaste se)
+Billing&shipping innfo
+- (Radiobutton na Private/legal entity)
+- jemno
+- příjmení
+- Společnost (při legal)
+- IČ (při legal)
+- Dič (při legal)
+- Adressa 
+- čílo popisne
+- město
+- zip kod
+- telefon
+Checkbox - vytvořit učet pro pozdější použití
+- heslo
+- heslo znovu
+Checkbox Doručit na jinou adresu
+
+
+
+
+
+
+
+
