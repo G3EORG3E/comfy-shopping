@@ -2,15 +2,18 @@ import './bootstrap';
 import shoppingCart from './components/ShoppingCart.vue';
 import productItem from './components/ProductItem.vue';
 import cartStatus from './components/CartStatus.vue';
+import flashMessage from './components/FlashMessage.vue'
 
 window.EventBus = new Vue();
+window.flash = message =>  EventBus.$emit('flash', message);
 
 let app = new Vue({
     el: '#root',
     components: {      
         productItem,
         shoppingCart,
-        cartStatus
+        cartStatus,
+        flashMessage
     }
 }); 
 

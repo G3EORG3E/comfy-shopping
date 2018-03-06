@@ -108,6 +108,57 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/FlashMessage.vue":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['message'],
+    data: function data() {
+        return {
+            body: '',
+            isVisible: false
+        };
+    },
+    created: function created() {
+        var _this = this;
+
+        if (this.message) {
+            this.flash(this.message);
+        }
+
+        EventBus.$on('flash', function (message) {
+            return _this.flash(message);
+        });
+    },
+
+    methods: {
+        hide: function hide() {
+            var _this2 = this;
+
+            setTimeout(function () {
+                _this2.isVisible = false;
+            }, 2000);
+        },
+        flash: function flash(message) {
+            this.body = message;
+            this.isVisible = true;
+
+            this.hide();
+        }
+    }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/ProductItem.vue":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -148,6 +199,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cart_steps_CartDeliveryInfo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__cart_steps_CartDeliveryInfo_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cart_steps_CartPaymentInfo_vue__ = __webpack_require__("./resources/assets/js/components/cart-steps/CartPaymentInfo.vue");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cart_steps_CartPaymentInfo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__cart_steps_CartPaymentInfo_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_findindex__ = __webpack_require__("./node_modules/lodash.findindex/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_findindex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_lodash_findindex__);
 //
 //
 //
@@ -171,6 +224,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+
 
 
 
@@ -181,15 +239,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             isVisible: false,
+            EventBus: EventBus,
             currentStep: {},
-            stepsArr: [{ component: 'cart-product-list', label: 'Košík', nextBtn: 'Osobní údaje', nextAccess: true }, { component: 'cart-contact-info', label: 'Osboní údaje', nextBtn: 'Vybrat dopravu', nextAccess: false }, { component: 'cart-delivery-info', label: 'Doprava', nextBtn: 'Vybrat platbu', nextAccess: false }, { component: 'cart-payment-info', label: 'Platba', nextBtn: 'Dokončit objednávku', nextAccess: false }],
-            aliveComponents: []
+            stepsArr: [{ component: 'cart-product-list', label: 'Košík', nextBtn: 'Osobní údaje', accessible: false }, { component: 'cart-contact-info', label: 'Osboní údaje', nextBtn: 'Vybrat dopravu', accessible: false }, { component: 'cart-delivery-info', label: 'Doprava', nextBtn: 'Vybrat platbu', accessible: false }, { component: 'cart-payment-info', label: 'Platba', nextBtn: 'Dokončit objednávku', accessible: false }]
         };
     },
     created: function created() {
         this.currentStep = this.stepsArr[0];
-        this.aliveComponents.push(this.stepsArr[0].component);
         EventBus.$on('show-cart', this.showCart);
+        EventBus.$on('cart-next-step', this.nextStep);
     },
 
     components: {
@@ -208,16 +266,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             document.getElementById('page-grid').classList.remove('active-cart');
         },
         processStep: function processStep(step) {
-            var index = this.stepsArr.indexOf(step);
-            console.log(index);
-            this.currentStep = step;
+            var index = __WEBPACK_IMPORTED_MODULE_4_lodash_findindex___default()(this.stepsArr, function (o) {
+                return o.component === step.component;
+            });
+            if (step.accessible) {
+                this.currentStep = step;
+                for (var i = index; i < this.stepsArr.length; i++) {
+                    this.stepsArr[i].accessible = false;
+                }
+            }
         },
         nextStep: function nextStep() {
-            var indexCurrent = this.stepsArr.indexOf(this.currentStep);
+            var _this = this;
 
-            if (this.stepsArr[indexCurrent].nextAccess) {
-                this.currentStep = this.stepsArr[indexCurrent + 1];
-            }
+            var indexCurrent = __WEBPACK_IMPORTED_MODULE_4_lodash_findindex___default()(this.stepsArr, function (o) {
+                return o.component === _this.currentStep.component;
+            });
+            this.stepsArr[indexCurrent].accessible = true;
+            this.currentStep = this.stepsArr[indexCurrent + 1];
+        },
+        prevStep: function prevStep() {
+            var _this2 = this;
+
+            var indexCurrent = __WEBPACK_IMPORTED_MODULE_4_lodash_findindex___default()(this.stepsArr, function (o) {
+                return o.component === _this2.currentStep.component;
+            });
+            this.stepsArr[indexCurrent].accessible = false;
+            this.currentStep = this.stepsArr[indexCurrent - 1];
         }
     }
 });
@@ -233,7 +308,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-//
 //
 //
 //
@@ -454,6 +528,8 @@ var Form = function () {
 			this[field].isValid = true;
 
 			this.fieldAttrs.push(field);
+
+			this.serverErrors = [];
 		}
 	}
 
@@ -616,7 +692,7 @@ var Form = function () {
 		key: 'proccesServerErrors',
 		value: function proccesServerErrors(invalidFields) {
 
-			console.log(invalidFields);
+			var fieldsArr = [];
 
 			for (var error in invalidFields) {
 				console.log(error);
@@ -662,20 +738,22 @@ var Form = function () {
 }();
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+	name: 'cart-contact-info',
 	data: function data() {
 		return {
-			countries: ['Česká Republika', 'Slovenská Republka'],
+			countries: [],
+			isLoged: false,
 			form: new Form({
 				email: {
 					rules: ['email', 'required'],
 					errorMessage: "Zadejte realný email"
 				},
 				choosenEntity: {
-					value: 'private',
-					rules: ['required']
+					value: 'private'
+					//rules: ['required']
 				},
 				firstName: {
-					rules: ['if:choosenEntity@private', 'required']
+					//rules: ['if:choosenEntity@private','required']
 				},
 				surName: {},
 				company: {
@@ -687,7 +765,7 @@ var Form = function () {
 				houseCode: {},
 				city: {},
 				country: {
-					rules: ['required']
+					//rules: ['required']
 				},
 				zipCode: {},
 				phone: {},
@@ -707,20 +785,53 @@ var Form = function () {
 				deliveryCity: {},
 				deliveryCountry: {},
 				deliveryZipCode: {}
-			}),
-			isCorrect: false
+			})
 		};
+	},
+	created: function created() {
+		var _this2 = this;
+
+		fetch('/data/registered.json', {
+			method: 'GET'
+		}).then(function (response) {
+			if (response.ok) {
+				response.json().then(function (_ref) {
+					var loged = _ref.loged,
+					    countries = _ref.countries,
+					    entities = _ref.entities;
+
+					_this2.countries = countries;
+					_this2.isLoged = loged;
+					if (loged) {
+						for (var entitiy in entities) {
+							_this2.form[entitiy].value = entities[entitiy];
+						}
+					}
+				});
+			} else {
+				response.json().then(function (errs) {});
+			}
+		});
+
+		EventBus.$on('nextStep', function (name) {
+			if (_this2.$options.name == name) _this2.submitForm();
+		});
+		EventBus.$on('destroy-comp', function (e) {
+			return _this2.$destroy;
+		});
+	},
+	beforeDestroy: function beforeDestroy() {
+		EventBus.$off('nextStep');
 	},
 
 	methods: {
 		submitForm: function submitForm() {
-			var _this2 = this;
-
-			//this.form.post('/data/form-correct.json')
-			this.form.post('/data/form-incorrect.php').then(function (data) {
-				_this2.isCorrect = true;
+			this.form.post('/data/form-correct.json')
+			//this.form.post('/data/form-incorrect.php')
+			.then(function (data) {
+				EventBus.$emit('cart-next-step');
 			}).catch(function (errors) {
-				_this2.isCorrect = false;
+				flash('Některé údaje jste zadali špatně');
 			});
 		}
 	}
@@ -749,9 +860,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+	name: 'cart-delivery-info',
 	data: function data() {
 		return {
-			deliveriesList: []
+			deliveriesList: [],
+			selectedDelivery: ''
 		};
 	},
 	created: function created() {
@@ -785,7 +898,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'cart-payment-info'
+});
 
 /***/ }),
 
@@ -828,6 +943,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+	name: 'cart-product-list',
 	data: function data() {
 		return {
 			products: [],
@@ -858,6 +974,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			return _this.fetchOnAdd(product);
 		});
 		EventBus.$emit('refresh-status', this.summary, this.itemsCount);
+		EventBus.$on('nextStep', function (name) {
+			if (_this.$options.name == name) EventBus.$emit('cart-next-step');
+		});
+	},
+	beforeDestroy: function beforeDestroy() {
+		EventBus.$off('add-to-cart');
+		EventBus.$off('nextStep');
 	},
 
 	methods: {
@@ -4090,6 +4213,31 @@ if (false) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-231c256e\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/FlashMessage.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm.isVisible
+    ? _c("div", { staticClass: "alert warning" }, [
+        _vm._v("\n    " + _vm._s(_vm.body) + "\n")
+      ])
+    : _vm._e()
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-231c256e", module.exports)
+  }
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-61e8b9fd\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/cart-steps/CartDeliveryInfo.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4103,10 +4251,26 @@ var render = function() {
     _vm._l(_vm.deliveriesList, function(delivery) {
       return _c("div", { key: delivery.id }, [
         _c("label", [
-          _vm._v("\n        " + _vm._s(delivery.label) + "\n        "),
+          _vm._v("\n\t\t\t\t" + _vm._s(delivery.label) + "\n\t\t\t\t"),
           _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.selectedDelivery,
+                expression: "selectedDelivery"
+              }
+            ],
             attrs: { type: "radio", name: "delivery" },
-            domProps: { value: delivery.id }
+            domProps: {
+              value: delivery.id,
+              checked: _vm._q(_vm.selectedDelivery, delivery.id)
+            },
+            on: {
+              change: function($event) {
+                _vm.selectedDelivery = delivery.id
+              }
+            }
           })
         ]),
         _vm._v(" "),
@@ -4725,58 +4889,60 @@ var render = function() {
           )
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "form-row" }, [
-          _c("div", { staticClass: "form-col col-1" }, [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.form.createAccount.value,
-                  expression: "form.createAccount.value"
-                }
-              ],
-              attrs: {
-                type: "checkbox",
-                name: "createAccount",
-                id: "createAcountCheck"
-              },
-              domProps: {
-                checked: Array.isArray(_vm.form.createAccount.value)
-                  ? _vm._i(_vm.form.createAccount.value, null) > -1
-                  : _vm.form.createAccount.value
-              },
-              on: {
-                change: function($event) {
-                  var $$a = _vm.form.createAccount.value,
-                    $$el = $event.target,
-                    $$c = $$el.checked ? true : false
-                  if (Array.isArray($$a)) {
-                    var $$v = null,
-                      $$i = _vm._i($$a, $$v)
-                    if ($$el.checked) {
-                      $$i < 0 &&
-                        (_vm.form.createAccount.value = $$a.concat([$$v]))
-                    } else {
-                      $$i > -1 &&
-                        (_vm.form.createAccount.value = $$a
-                          .slice(0, $$i)
-                          .concat($$a.slice($$i + 1)))
+        !_vm.isLoged
+          ? _c("div", { staticClass: "form-row" }, [
+              _c("div", { staticClass: "form-col col-1" }, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.form.createAccount.value,
+                      expression: "form.createAccount.value"
                     }
-                  } else {
-                    _vm.$set(_vm.form.createAccount, "value", $$c)
+                  ],
+                  attrs: {
+                    type: "checkbox",
+                    name: "createAccount",
+                    id: "createAcountCheck"
+                  },
+                  domProps: {
+                    checked: Array.isArray(_vm.form.createAccount.value)
+                      ? _vm._i(_vm.form.createAccount.value, null) > -1
+                      : _vm.form.createAccount.value
+                  },
+                  on: {
+                    change: function($event) {
+                      var $$a = _vm.form.createAccount.value,
+                        $$el = $event.target,
+                        $$c = $$el.checked ? true : false
+                      if (Array.isArray($$a)) {
+                        var $$v = null,
+                          $$i = _vm._i($$a, $$v)
+                        if ($$el.checked) {
+                          $$i < 0 &&
+                            (_vm.form.createAccount.value = $$a.concat([$$v]))
+                        } else {
+                          $$i > -1 &&
+                            (_vm.form.createAccount.value = $$a
+                              .slice(0, $$i)
+                              .concat($$a.slice($$i + 1)))
+                        }
+                      } else {
+                        _vm.$set(_vm.form.createAccount, "value", $$c)
+                      }
+                    }
                   }
-                }
-              }
-            }),
-            _vm._v(" "),
-            _c("label", { attrs: { for: "createAcountCheck" } }, [
-              _vm._v("Vytvořit účet pro pozdější použití")
+                }),
+                _vm._v(" "),
+                _c("label", { attrs: { for: "createAcountCheck" } }, [
+                  _vm._v("Vytvořit účet pro pozdější použití")
+                ])
+              ])
             ])
-          ])
-        ]),
+          : _vm._e(),
         _vm._v(" "),
-        _vm.form.createAccount.value
+        _vm.form.createAccount.value || !_vm.isLoged
           ? _c("div", { staticClass: "form-row" }, [
               _c(
                 "div",
@@ -5253,9 +5419,7 @@ var render = function() {
                 )
               ])
             ])
-          : _vm._e(),
-        _vm._v(" "),
-        _c("input", { attrs: { type: "submit", value: "send me beeatch" } })
+          : _vm._e()
       ]
     )
   ])
@@ -5344,6 +5508,10 @@ var render = function() {
                     "li",
                     {
                       key: step.component,
+                      class: {
+                        active: _vm.currentStep.component == step.component,
+                        clickable: step.accessible
+                      },
                       on: {
                         click: function($event) {
                           _vm.processStep(step)
@@ -5361,7 +5529,6 @@ var render = function() {
                 [
                   _c(
                     "keep-alive",
-                    { attrs: { include: _vm.aliveComponents } },
                     [_c(_vm.currentStep.component, { tag: "component" })],
                     1
                   )
@@ -5379,7 +5546,7 @@ var render = function() {
                         on: {
                           click: function($event) {
                             $event.preventDefault()
-                            _vm.moveNext($event)
+                            _vm.prevStep($event)
                           }
                         }
                       },
@@ -5395,7 +5562,10 @@ var render = function() {
                     on: {
                       click: function($event) {
                         $event.preventDefault()
-                        _vm.nextStep($event)
+                        _vm.EventBus.$emit(
+                          "nextStep",
+                          _vm.currentStep.component
+                        )
                       }
                     }
                   },
@@ -16324,19 +16494,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ProductItem_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_ProductItem_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_CartStatus_vue__ = __webpack_require__("./resources/assets/js/components/CartStatus.vue");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_CartStatus_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_CartStatus_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_FlashMessage_vue__ = __webpack_require__("./resources/assets/js/components/FlashMessage.vue");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_FlashMessage_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_FlashMessage_vue__);
+
 
 
 
 
 
 window.EventBus = new Vue();
+window.flash = function (message) {
+    return EventBus.$emit('flash', message);
+};
 
 var app = new Vue({
     el: '#root',
     components: {
         productItem: __WEBPACK_IMPORTED_MODULE_2__components_ProductItem_vue___default.a,
         shoppingCart: __WEBPACK_IMPORTED_MODULE_1__components_ShoppingCart_vue___default.a,
-        cartStatus: __WEBPACK_IMPORTED_MODULE_3__components_CartStatus_vue___default.a
+        cartStatus: __WEBPACK_IMPORTED_MODULE_3__components_CartStatus_vue___default.a,
+        flashMessage: __WEBPACK_IMPORTED_MODULE_4__components_FlashMessage_vue___default.a
     }
 });
 
@@ -16436,6 +16613,54 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-6247be2e", Component.options)
   } else {
     hotAPI.reload("data-v-6247be2e", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/FlashMessage.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/FlashMessage.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-231c256e\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/FlashMessage.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\FlashMessage.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-231c256e", Component.options)
+  } else {
+    hotAPI.reload("data-v-231c256e", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true

@@ -36,6 +36,7 @@
         </div>
     </div>
     <shopping-cart></shopping-cart>
+    <flash-message message=""></flash-message>
 
 </div>
 

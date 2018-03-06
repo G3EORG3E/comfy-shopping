@@ -30,7 +30,8 @@
 import findIndex from 'lodash.findindex'; 
 
 export default {
-  data() {
+	name: 'cart-product-list',
+  	data() {
 		return {
 			products: [],
 			summary: {},
@@ -54,7 +55,14 @@ export default {
 		this.fetchInit();
 		EventBus.$on('add-to-cart',  (product) => this.fetchOnAdd(product));
 		EventBus.$emit('refresh-status', this.summary, this.itemsCount );
-	},    
+		EventBus.$on('nextStep', (name) => {
+			if(this.$options.name == name) EventBus.$emit('cart-next-step');
+		});
+	},
+	beforeDestroy() {
+		EventBus.$off('add-to-cart');
+		EventBus.$off('nextStep');
+	},   
 	methods: {
 		addProd(prod) {
 			let index = findIndex(this.products, o => { return o.id === prod.id });

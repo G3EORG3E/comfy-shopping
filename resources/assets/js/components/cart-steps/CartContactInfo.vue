@@ -88,13 +88,13 @@
 					<div class="form-error">{{form.phone.errorMessage}}</div>
 				</div>
 			</div>
-			<div class="form-row">
+			<div class="form-row" v-if="!isLoged">
 				<div class="form-col col-1">
 					<input type="checkbox" name="createAccount" id="createAcountCheck" v-model="form.createAccount.value">
 					<label for="createAcountCheck">Vytvořit účet pro pozdější použití</label>
 				</div>
 			</div>	
-			<div class="form-row" v-if="form.createAccount.value">
+			<div class="form-row" v-if="form.createAccount.value || !isLoged">
 				<div class="form-col col-2" :class="{ hasError: !form.password.isValid }">
 					<label>Heslo</label>
 					<input type="password" name="password" v-model="form.password.value">
@@ -165,7 +165,6 @@
 					</div>
 				</div>
 			</div>
-			<input type="submit" value="send me beeatch">
 		</form>
 	</div>
 </template>
@@ -205,6 +204,8 @@ class Form {
 			this[field].isValid = true;
 			
 			this.fieldAttrs.push(field);
+
+			this.serverErrors = [];
 		}
 	}
 
@@ -228,7 +229,7 @@ class Form {
 		return data;
 	}
 
-	validate(property) {        
+	validate(property) {      
 
 		let valid = true;
 		let propertyValue = this[property].value;
@@ -277,7 +278,7 @@ class Form {
 
 	proccesServerErrors(invalidFields) {
 
-		console.log(invalidFields);
+		let fieldsArr = [];
 
 		for (let error in invalidFields) {
 			console.log(error);
@@ -318,9 +319,11 @@ class Form {
 }
 
 export default {
+	name: 'cart-contact-info',
 	data() {
 		return {            
-			countries: ['Česká Republika', 'Slovenská Republka'],
+			countries: [],
+			isLoged: false,
 			form: new Form({
 				email: {
 					rules: ['email','required'],
@@ -328,10 +331,10 @@ export default {
 				},
 				choosenEntity: {
 					value: 'private',
-					rules: ['required']
+					//rules: ['required']
 				},
 				firstName: {
-					rules: ['if:choosenEntity@private','required']
+					//rules: ['if:choosenEntity@private','required']
 				},
 				surName: {},
 				company: {
@@ -343,7 +346,7 @@ export default {
 				houseCode: {},
 				city: {},
 				country: {
-					rules: ['required']
+					//rules: ['required']
 				},
 				zipCode: {},
 				phone: {},
@@ -363,21 +366,49 @@ export default {
 				deliveryCity: {},
 				deliveryCountry: {},
 				deliveryZipCode: {},
-			}),
-			isCorrect: false
+			})
 		};
+	},
+	created() {
+		fetch('/data/registered.json', {
+			method: 'GET'
+		})
+		.then(response => {
+			if(response.ok) {
+				response.json().then(({loged,countries, entities}) => {
+					this.countries = countries;	
+					this.isLoged = loged;				
+					if(loged) {
+						for (let entitiy in entities) {
+							this.form[entitiy].value = 	entities[entitiy];			
+						}
+					}
+				});
+			} else {
+				response.json().then(errs => {
+					
+				});
+			}
+		});
+
+		EventBus.$on('nextStep', name => {
+			if(this.$options.name == name) this.submitForm();
+		});
+		EventBus.$on('destroy-comp', (e) => this.$destroy);
+	},
+	beforeDestroy() {
+		EventBus.$off('nextStep');
 	},
 	methods: {
 		submitForm() {
-			//this.form.post('/data/form-correct.json')
-			this.form.post('/data/form-incorrect.php')
+			this.form.post('/data/form-correct.json')
+			//this.form.post('/data/form-incorrect.php')
 			.then((data) => {
-				this.isCorrect = true;
+				EventBus.$emit('cart-next-step');
 			})
 			.catch((errors) => {
-				this.isCorrect = false;
-			});
-			
+				flash('Některé údaje jste zadali špatně');
+			});			
 		}
 	}
 }

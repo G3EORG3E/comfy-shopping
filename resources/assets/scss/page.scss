@@ -13,6 +13,22 @@ body {
 
 #root { overflow: hidden;}
 
+.alert {
+	position: fixed;
+    left: 30px;
+    bottom: 30px;
+    display: block;
+    padding: 23px 29px;
+    z-index: 9999;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.06);
+    font-weight: 600;
+    font-size: 15px;
+    color: #8982a5;
+    border-left: 4px solid #b99cf9;
+}
+
 
 #main-header {
 	position: fixed;

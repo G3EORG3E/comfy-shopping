@@ -1,0 +1,31 @@
+{
+    "loged": true, 
+    "countries": ["Česká Republika", "Slovenská Republika"],
+    "entities": {
+        "email": "test@gmaml.com",
+        "choosenEntity": "private",
+        "firstName": "John",
+        "surName": "Doe",
+        "company": "",
+        "companyId": "",
+        "vatId": "",
+        "address": "Nová 118",
+        "houseCode": "5",
+        "city": "Aš",
+        "country": "Česko",
+        "zipCode": "74222",
+        "phone": "+42055564555",
+        "createAccount": false,
+        "password": "",
+        "rePassword": "",
+        "sendElseWhere": false,
+        "deliveryFirstName": "",
+        "deliverySurName": "",
+        "deliveryCompany": "",
+        "deliveryAddress": "",
+        "deliveryHouseCode": "",
+        "deliveryCity": "",
+        "deliveryCountry": "",
+        "deliveryZipCode": ""
+    }
+}
