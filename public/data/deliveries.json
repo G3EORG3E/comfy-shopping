@@ -24,16 +24,6 @@
         "id": 3,
         "description": "Popis této dopravy",
         "price": "Zdarma",
-        "currency": "",
-        "places": [
-            {
-                "placeId": 1,
-                "placeLabel": "Ostrava"
-            },
-            {
-                "placeId": 2,
-                "placeLabel": "Praha"
-            }
-        ]
+        "currency": ""        
     }
 ]

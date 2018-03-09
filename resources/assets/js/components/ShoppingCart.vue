@@ -73,7 +73,9 @@ export default {
                 for (let i = index; i < this.stepsArr.length; i++) {
                     this.stepsArr[i].accessible = false;               
                 }
-            }
+            } /*else if(this.stepsArr[index-1].accessible == true) {
+                this.nextStep();
+            }*/
         },
         nextStep() {
             let indexCurrent = findIndex(this.stepsArr, o => { return o.component === this.currentStep.component });

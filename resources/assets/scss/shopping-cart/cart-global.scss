@@ -52,6 +52,20 @@
 
 		li {
 			padding: 10px;
+			margin-bottom: -1px;
+			border-bottom: 1px solid transparent;
+			opacity: .5;
+
+			&.active,&.clickable {
+				cursor: pointer;
+				opacity: 1;
+
+			}
+
+			&.active {
+				border-bottom-color: #8471b3;
+				font-weight: bold;
+			}
 		}
 	}
 

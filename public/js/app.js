@@ -274,7 +274,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 for (var i = index; i < this.stepsArr.length; i++) {
                     this.stepsArr[i].accessible = false;
                 }
-            }
+            } /*else if(this.stepsArr[index-1].accessible == true) {
+                this.nextStep();
+              }*/
         },
         nextStep: function nextStep() {
             var _this = this;
@@ -844,6 +846,10 @@ var Form = function () {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_findindex__ = __webpack_require__("./node_modules/lodash.findindex/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_findindex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_findindex__);
+//
+//
 //
 //
 //
@@ -859,16 +865,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
 	name: 'cart-delivery-info',
 	data: function data() {
 		return {
 			deliveriesList: [],
-			selectedDelivery: ''
+			selectedDelivery: '',
+			selectedPlace: ''
 		};
 	},
 	created: function created() {
 		var _this = this;
+
+		EventBus.$on('nextStep', function (name) {
+			if (_this.$options.name == name) _this.submitForm();
+		});
 
 		fetch('/data/deliveries.json', {
 			method: 'GET'
@@ -881,6 +893,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		}).then(function (delArrr) {
 			_this.deliveriesList = delArrr;
 		});
+	},
+
+	methods: {
+		fetchAdditional: function fetchAdditional(deliveryId) {
+			var _this2 = this;
+
+			var index = __WEBPACK_IMPORTED_MODULE_0_lodash_findindex___default()(this.deliveriesList, function (o) {
+				return o.id === deliveryId;
+			});
+			if (!this.deliveriesList[index].hasOwnProperty('new')) {
+				fetch('/data/delivery-detail.json', {
+					method: 'POST',
+					body: { id: deliveryId }
+				}).then(function (response) {
+					if (response.ok) {
+						return response.json();
+					} else {
+						alert("Something went wrong bro :(");
+					}
+				}).then(function (delDetail) {
+					var newe = _this2.deliveriesList[index];
+					newe.new = delDetail;
+					Vue.set(_this2.deliveriesList, index, newe);
+				});
+			}
+		},
+		submitForm: function submitForm() {
+			EventBus.$emit('cart-next-step');
+		}
 	}
 });
 
@@ -4267,25 +4308,62 @@ var render = function() {
               checked: _vm._q(_vm.selectedDelivery, delivery.id)
             },
             on: {
-              change: function($event) {
-                _vm.selectedDelivery = delivery.id
-              }
+              change: [
+                function($event) {
+                  _vm.selectedDelivery = delivery.id
+                },
+                function($event) {
+                  _vm.fetchAdditional(delivery.id)
+                }
+              ]
             }
           })
         ]),
         _vm._v(" "),
-        delivery.hasOwnProperty("places")
-          ? _c(
-              "select",
-              { attrs: { id: "zasilkovna" } },
-              _vm._l(delivery.places, function(place) {
-                return _c(
-                  "option",
-                  { key: place.placeId, domProps: { value: place.placeId } },
-                  [_vm._v(_vm._s(place.placeLabel))]
-                )
-              })
-            )
+        delivery.hasOwnProperty("new") && delivery.id == _vm.selectedDelivery
+          ? _c("div", { staticClass: "more-info" }, [
+              delivery.hasOwnProperty("new")
+                ? _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.selectedPlace,
+                          expression: "selectedPlace"
+                        }
+                      ],
+                      attrs: { id: "zasilkovna" },
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.selectedPlace = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
+                    _vm._l(delivery.new.places, function(place) {
+                      return _c(
+                        "option",
+                        {
+                          key: place.placeId,
+                          domProps: { value: place.placeId }
+                        },
+                        [_vm._v(_vm._s(place.placeLabel))]
+                      )
+                    })
+                  )
+                : _vm._e()
+            ])
           : _vm._e()
       ])
     })

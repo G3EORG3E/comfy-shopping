@@ -1,0 +1,13 @@
+{
+    "fullDescription": "Dlouhy popis zde",
+    "places": [
+        {
+            "placeId": 1,
+            "placeLabel": "Ostrava"
+        },
+        {
+            "placeId": 2,
+            "placeLabel": "Praha"
+        }
+    ]
+}
