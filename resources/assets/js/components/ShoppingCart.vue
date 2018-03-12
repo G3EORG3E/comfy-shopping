@@ -71,11 +71,11 @@ export default {
         },
         processStep(step) {
             let index = findIndex(this.stepsArr, o => { return o.component === step.component });
-            let activeIntex = findIndex(this.stepsArr, o => { return o.component === this.currentStep.component });
+            let activeIntdex = findIndex(this.stepsArr, o => { return o.component === this.currentStep.component });
 
             if(step.accessible) {
                 this.currentStep = step;
-                for (let i = index; i < activeIntex; i++) {
+                for (let i = index; i < activeIntdex; i++) {
                     this.stepsArr[i].accessible = false;  
                     this.$children[i].$data.reload = true;   
                 }

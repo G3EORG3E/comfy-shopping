@@ -62,13 +62,12 @@
 		display: flex;
 		list-style: none;
 		border-bottom: 1px solid rgba($color: $cart-main-color, $alpha: .11);
-		margin-bottom: 20px;
+		margin-bottom: 30px;
 		align-items: center;
-		justify-content: space-around;
+		justify-content: space-between;
 		position: relative;
-		font-weight: 500;
-		color: $cart-basic-color;
-
+		min-height:51px;
+		
 		&:before {
 			content: attr(data-active);
 			position: absolute;
@@ -76,29 +75,37 @@
 			bottom: -20px;
 			font-weight: bold;
 			font-size: 78px;
-			color: rgba($color: $cart-main-color, $alpha: .04);
+			color: rgba($color: $cart-main-color, $alpha: .045);
 		}
-
+		
 		li {
-			padding: 10px;
+			padding: 10px 10px 6px;
 			margin-bottom: -1px;
 			border-bottom: 1px solid transparent;
-			opacity: .5;
+			opacity: .45;
 			text-transform: uppercase;
 			cursor: default;
 			position: relative;
-
+			font-size: 14px;
+			color: $cart-basic-color;
+			font-weight: 500;
+			transition: all .2s ease-in-out;
+			
 			&.active,&.clickable {
 				cursor: pointer;
 				opacity: 1;
 
 			}
 
+			&.clickable:hover {
+				color: $cart-main-color;
+			}
+
 			&.active {
 				color: $cart-main-color;
 				border-bottom-color: $cart-main-color;
-				font-weight: bold;
-				font-size: 27px;
+				font-weight: 300;
+    			font-size: 28px
 			}
 		}
 	}
@@ -118,12 +125,12 @@
 		text-decoration: none;
 		color: #fff;
 		background: $cart-main-color;
-		border: 2px solid $cart-main-color;
+		border: 1px solid $cart-main-color;
 		transition: .25s ease-in-out;
 		border-radius: 4px;
 		padding: 12px 22px;
 		text-transform: uppercase;
-		font-weight: 600;
+		font-weight: 500;
 		
 		&.ghost {
 			background:transparent;

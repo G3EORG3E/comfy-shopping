@@ -275,13 +275,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var index = __WEBPACK_IMPORTED_MODULE_5_lodash_findindex___default()(this.stepsArr, function (o) {
                 return o.component === step.component;
             });
-            var activeIntex = __WEBPACK_IMPORTED_MODULE_5_lodash_findindex___default()(this.stepsArr, function (o) {
+            var activeIntdex = __WEBPACK_IMPORTED_MODULE_5_lodash_findindex___default()(this.stepsArr, function (o) {
                 return o.component === _this.currentStep.component;
             });
 
             if (step.accessible) {
                 this.currentStep = step;
-                for (var i = index; i < activeIntex; i++) {
+                for (var i = index; i < activeIntdex; i++) {
                     this.stepsArr[i].accessible = false;
                     this.$children[i].$data.reload = true;
                 }
@@ -775,7 +775,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_findindex__ = __webpack_require__("./node_modules/lodash.findindex/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_findindex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_findindex__);
-//
 //
 //
 //
@@ -4067,31 +4066,25 @@ var render = function() {
             _vm._v(" "),
             _c("div", { staticClass: "cart-items-summary" }, [
               _c("div", { staticClass: "price" }, [
-                _vm._v(
-                  "Cena bez DPH: " +
+                _vm._v("Cena bez DPH: "),
+                _c("strong", [
+                  _vm._v(
                     _vm._s(_vm.summary.price) +
-                    " " +
-                    _vm._s(_vm.summary.currency)
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "vat" }, [
-                _vm._v(
-                  "DPH " +
-                    _vm._s(_vm.summary.vatPrecentage) +
-                    "% " +
-                    _vm._s(_vm.summary.vatAmount) +
-                    " " +
-                    _vm._s(_vm.summary.currency)
-                )
+                      " " +
+                      _vm._s(_vm.summary.currency)
+                  )
+                ])
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "price-vat" }, [
-                _vm._v(
-                  _vm._s(_vm.summary.priceVat) +
-                    " " +
-                    _vm._s(_vm.summary.currency)
-                )
+                _vm._v("Cena s DPH: "),
+                _c("strong", [
+                  _vm._v(
+                    _vm._s(_vm.summary.priceVat) +
+                      " " +
+                      _vm._s(_vm.summary.currency)
+                  )
+                ])
               ])
             ])
           ])

@@ -30,9 +30,8 @@
 				<button @click="voucherValidate">Submit</button>
 			</div>
 			<div class="cart-items-summary">
-				<div class="price">Cena bez DPH: {{ summary.price }} {{ summary.currency }}</div>
-				<div class="vat">DPH {{ summary.vatPrecentage }}% {{ summary.vatAmount }} {{ summary.currency }}</div>
-				<div class="price-vat">{{ summary.priceVat }} {{ summary.currency }}</div>
+				<div class="price">Cena bez DPH: <strong>{{ summary.price }} {{ summary.currency }}</strong></div>
+				<div class="price-vat">Cena s DPH: <strong>{{ summary.priceVat }} {{ summary.currency }}</strong></div>
 			</div>
 		</div>
 	</div>
