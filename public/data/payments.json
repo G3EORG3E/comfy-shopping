@@ -1,0 +1,26 @@
+[
+    {
+        "paymentId": 1,
+        "name": "Platba kartou",
+        "price": "Zdarma",
+        "shortDescription": "Lorem ipsum is dolor",
+        "longDescription": "lorem100",
+        "image": "/images/cart.png"
+    },
+    {
+        "paymentId": 1,
+        "name": "Převodem na účet",
+        "price": "Zdarma",
+        "shortDescription": "Lorem ipsum is dolor",
+        "longDescription": "lorem100",
+        "image": "/images/cart.png"
+    },
+    {
+        "paymentId": 1,
+        "name": "Dobírka",
+        "price": "60 Kč",
+        "shortDescription": "Lorem ipsum is dolor",
+        "longDescription": "lorem100",
+        "image": "/images/cart.png"
+    }
+]

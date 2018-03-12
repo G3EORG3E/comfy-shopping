@@ -26,7 +26,7 @@ export default {
   },
   methods: {
       openCart() {
-          EventBus.$emit('show-cart');
+        EventBus.$emit('show-cart');
       }
   }
 }

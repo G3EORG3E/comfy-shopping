@@ -8,10 +8,9 @@
         }
     ],
     "summary": {
-        "currency": "Kč",
-        "price": 500,
+        "price": "500 Kč",
         "vatPrecentage": 15,
-        "vatAmount": 252,
-        "priceVat": 752
+        "vatAmount": "252 Kč",
+        "priceVat": "752 Kč"
     }
 }

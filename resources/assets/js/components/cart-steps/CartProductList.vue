@@ -1,27 +1,39 @@
 <template>
-	<div id="cart-product-list">			
-		<ul>
-			<transition-group name="list" tag="p">
-				<li v-for="product in products" :key="product.id">
-					<div>
-						{{ product.name + ' ' + (product.price * product.count) }}
-						<a href="#" @click.prevent="removeProd(product)">xxx</a>
+	<div id="cart-product-list">	
+		<transition-group name="list" tag="ul" class="cart-products">
+			<li class="cart-product" v-for="product in products" :key="product.id">
+				<div class="thumbnail">
+					<a href="#"><img src="/images/prod.png" alt="mysterybox"></a>
+				</div>
+				<div class="info">
+					<div class="product">
+						<a href="#">{{ product.name }}</a>
 					</div>
-					<a href="#" @click.prevent="(product.count > 1 ? product.count-- : product.count)">--</a>
-					<input type="number" v-model="product.count" min="1" @blur="(product.count < 1 ? product.count=1 : product.count= Math.floor(product.count))">
-					<a href="#" @click.prevent="product.count++">++</a>
-				</li>
-			</transition-group>
-		</ul>
-		<p v-if="products.length == 0">Košík je prázdný</p>
-		<div class="cart-items-summary">
-			<div class="price">Cena bez DPH: {{ summary.price }} {{ summary.currency }}</div>
-			<div class="vat">DPH {{ summary.vatPrecentage }}% {{ summary.vatAmount }} {{ summary.currency }}</div>
-			<div class="price-vat">{{ summary.priceVat }} {{ summary.currency }}</div>
-		</div>
-		<div>
-			<input type="text" placeholder="Voucher Code" v-model="voucherCode">
-			<button @click="voucherValidate">Submit</button>
+					<div class="variant">XXL - Purple light</div>
+				</div>
+				<div class="qty">
+					<div class="decrease">-</div>
+					<input type="text" v-model="product.count" min="1" @blur="(product.count < 1 ? product.count=1 : product.count= Math.floor(product.count))">
+					<div class="increase">+</div>
+				</div>
+				<div class="price">
+					<div class="base">17 958 Kč bez DPH</div>
+					<div class="vat">{{ product.price }}</div>
+				</div>
+				<div class="remove" @click.prevent="removeProd(product)"></div>
+			</li>
+		</transition-group>
+		<p class="empty-cart" v-if="products.length == 0">Košík je prázdný</p>
+		<div class="bottom-status" v-if="products.length != 0">
+			<div>
+				<input type="text" placeholder="Voucher Code" v-model="voucherCode">
+				<button @click="voucherValidate">Submit</button>
+			</div>
+			<div class="cart-items-summary">
+				<div class="price">Cena bez DPH: {{ summary.price }} {{ summary.currency }}</div>
+				<div class="vat">DPH {{ summary.vatPrecentage }}% {{ summary.vatAmount }} {{ summary.currency }}</div>
+				<div class="price-vat">{{ summary.priceVat }} {{ summary.currency }}</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -56,7 +68,12 @@ export default {
 		EventBus.$on('add-to-cart',  (product) => this.fetchOnAdd(product));
 		EventBus.$emit('refresh-status', this.summary, this.itemsCount );
 		EventBus.$on('nextStep', (name) => {
-			if(this.$options.name == name) EventBus.$emit('cart-next-step');
+			if(this.$options.name == name) {
+				if(this.products.length > 0)
+					EventBus.$emit('cart-next-step');
+				else 
+					flash('Košík je prazdný');
+			}
 		});
 	},
 	beforeDestroy() {
@@ -136,14 +153,16 @@ export default {
 			})
 			.then(response  => {
 				if(response.ok) {
-					return response.json();
+					return response.json();					
+
 				} else {
-					alert("Something went wrong bro :(");
+					flash('Zboží se nepodařilo přidat do košíku');
 				}
 			})
 			.then(({product, summary}) => {
 				this.addProd(product);
 				this.summary = summary;
+				flash('Zboží bylo přídáno do košíku');
 
 				EventBus.$emit('show-cart');
 			});

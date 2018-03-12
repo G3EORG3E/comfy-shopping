@@ -199,8 +199,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__cart_steps_CartDeliveryInfo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__cart_steps_CartDeliveryInfo_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cart_steps_CartPaymentInfo_vue__ = __webpack_require__("./resources/assets/js/components/cart-steps/CartPaymentInfo.vue");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cart_steps_CartPaymentInfo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__cart_steps_CartPaymentInfo_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_findindex__ = __webpack_require__("./node_modules/lodash.findindex/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_findindex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_lodash_findindex__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__cart_steps_CartSummary_vue__ = __webpack_require__("./resources/assets/js/components/cart-steps/CartSummary.vue");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__cart_steps_CartSummary_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__cart_steps_CartSummary_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lodash_findindex__ = __webpack_require__("./node_modules/lodash.findindex/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lodash_findindex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_lodash_findindex__);
 //
 //
 //
@@ -228,6 +230,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+
 
 
 
@@ -241,7 +244,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             isVisible: false,
             EventBus: EventBus,
             currentStep: {},
-            stepsArr: [{ component: 'cart-product-list', label: 'Košík', nextBtn: 'Osobní údaje', accessible: false }, { component: 'cart-contact-info', label: 'Osboní údaje', nextBtn: 'Vybrat dopravu', accessible: false }, { component: 'cart-delivery-info', label: 'Doprava', nextBtn: 'Vybrat platbu', accessible: false }, { component: 'cart-payment-info', label: 'Platba', nextBtn: 'Dokončit objednávku', accessible: false }]
+            stepsArr: [{ component: 'cart-product-list', label: 'Košík', nextBtn: 'Osobní údaje', accessible: false }, { component: 'cart-contact-info', label: 'Osboní údaje', nextBtn: 'Vybrat dopravu', accessible: false }, { component: 'cart-delivery-info', label: 'Doprava', nextBtn: 'Vybrat platbu', accessible: false }, { component: 'cart-payment-info', label: 'Platba', nextBtn: 'Dokončit objednávku', accessible: false }, { component: 'cart-summary', label: 'Shrnutí', nextBtn: 'Potvrdit', accessible: false }]
         };
     },
     created: function created() {
@@ -254,7 +257,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         'cart-product-list': __WEBPACK_IMPORTED_MODULE_0__cart_steps_CartProductList_vue___default.a,
         'cart-contact-info': __WEBPACK_IMPORTED_MODULE_1__cart_steps_CartContactInfo_vue___default.a,
         'cart-delivery-info': __WEBPACK_IMPORTED_MODULE_2__cart_steps_CartDeliveryInfo_vue___default.a,
-        'cart-payment-info': __WEBPACK_IMPORTED_MODULE_3__cart_steps_CartPaymentInfo_vue___default.a
+        'cart-payment-info': __WEBPACK_IMPORTED_MODULE_3__cart_steps_CartPaymentInfo_vue___default.a,
+        'cart-summary': __WEBPACK_IMPORTED_MODULE_4__cart_steps_CartSummary_vue___default.a
     },
     methods: {
         showCart: function showCart() {
@@ -266,33 +270,39 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             document.getElementById('page-grid').classList.remove('active-cart');
         },
         processStep: function processStep(step) {
-            var index = __WEBPACK_IMPORTED_MODULE_4_lodash_findindex___default()(this.stepsArr, function (o) {
-                return o.component === step.component;
-            });
-            if (step.accessible) {
-                this.currentStep = step;
-                for (var i = index; i < this.stepsArr.length; i++) {
-                    this.stepsArr[i].accessible = false;
-                }
-            } /*else if(this.stepsArr[index-1].accessible == true) {
-                this.nextStep();
-              }*/
-        },
-        nextStep: function nextStep() {
             var _this = this;
 
-            var indexCurrent = __WEBPACK_IMPORTED_MODULE_4_lodash_findindex___default()(this.stepsArr, function (o) {
+            var index = __WEBPACK_IMPORTED_MODULE_5_lodash_findindex___default()(this.stepsArr, function (o) {
+                return o.component === step.component;
+            });
+            var activeIntex = __WEBPACK_IMPORTED_MODULE_5_lodash_findindex___default()(this.stepsArr, function (o) {
                 return o.component === _this.currentStep.component;
+            });
+
+            if (step.accessible) {
+                this.currentStep = step;
+                for (var i = index; i < activeIntex; i++) {
+                    this.stepsArr[i].accessible = false;
+                    this.$children[i].$data.reload = true;
+                }
+            }
+        },
+        nextStep: function nextStep() {
+            var _this2 = this;
+
+            var indexCurrent = __WEBPACK_IMPORTED_MODULE_5_lodash_findindex___default()(this.stepsArr, function (o) {
+                return o.component === _this2.currentStep.component;
             });
             this.stepsArr[indexCurrent].accessible = true;
             this.currentStep = this.stepsArr[indexCurrent + 1];
         },
         prevStep: function prevStep() {
-            var _this2 = this;
+            var _this3 = this;
 
-            var indexCurrent = __WEBPACK_IMPORTED_MODULE_4_lodash_findindex___default()(this.stepsArr, function (o) {
-                return o.component === _this2.currentStep.component;
+            var indexCurrent = __WEBPACK_IMPORTED_MODULE_5_lodash_findindex___default()(this.stepsArr, function (o) {
+                return o.component === _this3.currentStep.component;
             });
+            this.$children[indexCurrent].$data.reload = true;
             this.stepsArr[indexCurrent].accessible = false;
             this.currentStep = this.stepsArr[indexCurrent - 1];
         }
@@ -306,10 +316,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__classes_Form_js__ = __webpack_require__("./resources/assets/js/classes/Form.js");
 //
 //
 //
@@ -483,261 +490,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 //
 
 
-var Validation = function () {
-	function Validation() {
-		_classCallCheck(this, Validation);
-	}
 
-	_createClass(Validation, null, [{
-		key: 'required',
-		value: function required(value) {
-			return !!value.length;
-		}
-	}, {
-		key: 'email',
-		value: function email(value) {
-			var pattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
-			return pattern.test(value);
-		}
-	}, {
-		key: 'min',
-		value: function min(value, _min) {
-			return value.length >= _min;
-		}
-	}, {
-		key: 'max',
-		value: function max(value, min) {
-			return value.length <= min;
-		}
-	}]);
-
-	return Validation;
-}();
-
-var Form = function () {
-	// data expect this object: {filedName:{value:"",rules:[],errorMsg: ""},...}
-	function Form(data) {
-		_classCallCheck(this, Form);
-
-		this.fieldAttrs = [];
-		this.invalidFields = new Set();
-
-		for (var field in data) {
-			this[field] = {};
-			this[field].value = data[field].hasOwnProperty('value') ? data[field].value : '';
-			this[field].rules = data[field].hasOwnProperty('rules') ? data[field].rules : [];
-			this[field].errorMessage = data[field].hasOwnProperty('errorMessage') ? data[field].errorMessage : "Default Message";
-			this[field].isValid = true;
-
-			this.fieldAttrs.push(field);
-
-			this.serverErrors = [];
-		}
-	}
-
-	_createClass(Form, [{
-		key: 'data',
-		value: function data() {
-			var data = {};
-
-			var _iteratorNormalCompletion = true;
-			var _didIteratorError = false;
-			var _iteratorError = undefined;
-
-			try {
-				for (var _iterator = this.fieldAttrs[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-					var property = _step.value;
-
-					data[property] = this[property].value;
-				}
-			} catch (err) {
-				_didIteratorError = true;
-				_iteratorError = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion && _iterator.return) {
-						_iterator.return();
-					}
-				} finally {
-					if (_didIteratorError) {
-						throw _iteratorError;
-					}
-				}
-			}
-
-			return data;
-		}
-	}, {
-		key: 'getErrors',
-		value: function getErrors() {
-			var data = {};
-
-			var _iteratorNormalCompletion2 = true;
-			var _didIteratorError2 = false;
-			var _iteratorError2 = undefined;
-
-			try {
-				for (var _iterator2 = this.invalidFields[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-					var property = _step2.value;
-
-					data[property] = this[property].errorMessage;
-				}
-			} catch (err) {
-				_didIteratorError2 = true;
-				_iteratorError2 = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion2 && _iterator2.return) {
-						_iterator2.return();
-					}
-				} finally {
-					if (_didIteratorError2) {
-						throw _iteratorError2;
-					}
-				}
-			}
-
-			return data;
-		}
-	}, {
-		key: 'validate',
-		value: function validate(property) {
-
-			var valid = true;
-			var propertyValue = this[property].value;
-
-			var _iteratorNormalCompletion3 = true;
-			var _didIteratorError3 = false;
-			var _iteratorError3 = undefined;
-
-			try {
-				for (var _iterator3 = this[property].rules[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-					var rule = _step3.value;
-
-					var ruleParts = rule.split(':');
-					var ruleMethod = ruleParts[0];
-					var ruleArg = ruleParts[1];
-
-					if (ruleMethod == 'if') {
-						var ifArgs = ruleArg.split('@');
-
-						if (this[ifArgs[0]].value == ifArgs[1]) continue;else valid = true;break;
-					}
-
-					if (Validation.hasOwnProperty(ruleParts[0])) {
-						var validStep = ruleParts.length == 1 ? Validation[ruleMethod](propertyValue) : Validation[ruleMethod](propertyValue, ruleArg);
-						valid = valid && validStep;
-						if (valid == false) break;
-					}
-				}
-			} catch (err) {
-				_didIteratorError3 = true;
-				_iteratorError3 = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion3 && _iterator3.return) {
-						_iterator3.return();
-					}
-				} finally {
-					if (_didIteratorError3) {
-						throw _iteratorError3;
-					}
-				}
-			}
-
-			if (!valid) {
-				this[property].isValid = false;
-				this.invalidFields.add(property);
-			} else {
-				this[property].isValid = true;
-				this.invalidFields.delete(property);
-			}
-		}
-	}, {
-		key: 'validateAll',
-		value: function validateAll() {
-			var _iteratorNormalCompletion4 = true;
-			var _didIteratorError4 = false;
-			var _iteratorError4 = undefined;
-
-			try {
-				for (var _iterator4 = this.fieldAttrs[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-					var property = _step4.value;
-
-					this.validate(property);
-				}
-			} catch (err) {
-				_didIteratorError4 = true;
-				_iteratorError4 = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion4 && _iterator4.return) {
-						_iterator4.return();
-					}
-				} finally {
-					if (_didIteratorError4) {
-						throw _iteratorError4;
-					}
-				}
-			}
-		}
-	}, {
-		key: 'isValid',
-		value: function isValid() {
-			this.validateAll();
-
-			if (this.invalidFields.size > 0) return false;
-
-			return true;
-		}
-	}, {
-		key: 'proccesServerErrors',
-		value: function proccesServerErrors(invalidFields) {
-
-			var fieldsArr = [];
-
-			for (var error in invalidFields) {
-				console.log(error);
-				//data[property] = this[property].errorMessage;            
-			}
-		}
-	}, {
-		key: 'submit',
-		value: function submit(method, url) {
-			var _this = this;
-
-			return new Promise(function (resolve, reject) {
-
-				if (_this.isValid()) {
-					fetch(url, {
-						method: 'POST',
-						body: _this.data()
-					}).then(function (response) {
-						if (response.ok) {
-							response.json().then(function (data) {
-								resolve(data);
-							});
-						} else {
-							response.json().then(function (errs) {
-								_this.proccesServerErrors(errs);
-								reject(errs);
-							});
-						}
-					});
-				} else {
-					reject(_this.getErrors());
-				}
-			});
-		}
-	}, {
-		key: 'post',
-		value: function post(url) {
-			return this.submit('POST', url);
-		}
-	}]);
-
-	return Form;
-}();
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	name: 'cart-contact-info',
@@ -745,8 +498,34 @@ var Form = function () {
 		return {
 			countries: [],
 			isLoged: false,
-			form: new Form({
-				email: {
+			form: new __WEBPACK_IMPORTED_MODULE_0__classes_Form_js__["a" /* default */]({}),
+			reload: false
+		};
+	},
+	created: function created() {
+		var _this = this;
+
+		this.init();
+
+		EventBus.$on('nextStep', function (name) {
+			if (_this.$options.name == name) _this.submitForm();
+		});
+	},
+	activated: function activated() {
+		if (this.reload) {
+			this.init();
+			this.reload = false;
+		}
+	},
+	beforeDestroy: function beforeDestroy() {
+		EventBus.$off('nextStep');
+	},
+
+	methods: {
+		init: function init() {
+			var _this2 = this;
+
+			this.form = new __WEBPACK_IMPORTED_MODULE_0__classes_Form_js__["a" /* default */]({ email: {
 					rules: ['email', 'required'],
 					errorMessage: "Zadejte realný email"
 				},
@@ -787,46 +566,30 @@ var Form = function () {
 				deliveryCity: {},
 				deliveryCountry: {},
 				deliveryZipCode: {}
-			})
-		};
-	},
-	created: function created() {
-		var _this2 = this;
+			});
 
-		fetch('/data/registered.json', {
-			method: 'GET'
-		}).then(function (response) {
-			if (response.ok) {
-				response.json().then(function (_ref) {
-					var loged = _ref.loged,
-					    countries = _ref.countries,
-					    entities = _ref.entities;
+			fetch('/data/registered.json', {
+				method: 'GET'
+			}).then(function (response) {
+				if (response.ok) {
+					response.json().then(function (_ref) {
+						var loged = _ref.loged,
+						    countries = _ref.countries,
+						    entities = _ref.entities;
 
-					_this2.countries = countries;
-					_this2.isLoged = loged;
-					if (loged) {
-						for (var entitiy in entities) {
-							_this2.form[entitiy].value = entities[entitiy];
+						_this2.countries = countries;
+						_this2.isLoged = loged;
+						if (loged) {
+							for (var entitiy in entities) {
+								_this2.form[entitiy].value = entities[entitiy];
+							}
 						}
-					}
-				});
-			} else {
-				response.json().then(function (errs) {});
-			}
-		});
-
-		EventBus.$on('nextStep', function (name) {
-			if (_this2.$options.name == name) _this2.submitForm();
-		});
-		EventBus.$on('destroy-comp', function (e) {
-			return _this2.$destroy;
-		});
-	},
-	beforeDestroy: function beforeDestroy() {
-		EventBus.$off('nextStep');
-	},
-
-	methods: {
+					});
+				} else {
+					response.json().then(function (errs) {});
+				}
+			});
+		},
 		submitForm: function submitForm() {
 			this.form.post('/data/form-correct.json')
 			//this.form.post('/data/form-incorrect.php')
@@ -872,7 +635,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		return {
 			deliveriesList: [],
 			selectedDelivery: '',
-			selectedPlace: ''
+			selectedPlace: '',
+			reload: false
 		};
 	},
 	created: function created() {
@@ -882,22 +646,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			if (_this.$options.name == name) _this.submitForm();
 		});
 
-		fetch('/data/deliveries.json', {
-			method: 'GET'
-		}).then(function (response) {
-			if (response.ok) {
-				return response.json();
-			} else {
-				alert("Something went wrong bro :(");
-			}
-		}).then(function (delArrr) {
-			_this.deliveriesList = delArrr;
-		});
+		this.init();
+	},
+	activated: function activated() {
+		if (this.reload) {
+			this.init();
+			this.reload = false;
+			this.selectedDelivery = '';
+			this.selectedPlace = '';
+		}
 	},
 
 	methods: {
-		fetchAdditional: function fetchAdditional(deliveryId) {
+		init: function init() {
 			var _this2 = this;
+
+			fetch('/data/deliveries.json', {
+				method: 'GET'
+			}).then(function (response) {
+				if (response.ok) {
+					return response.json();
+				} else {
+					alert("Something went wrong bro :(");
+				}
+			}).then(function (delArrr) {
+				_this2.deliveriesList = delArrr;
+			});
+		},
+		fetchAdditional: function fetchAdditional(deliveryId) {
+			var _this3 = this;
 
 			var index = __WEBPACK_IMPORTED_MODULE_0_lodash_findindex___default()(this.deliveriesList, function (o) {
 				return o.id === deliveryId;
@@ -913,9 +690,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 						alert("Something went wrong bro :(");
 					}
 				}).then(function (delDetail) {
-					var newe = _this2.deliveriesList[index];
+					var newe = _this3.deliveriesList[index];
 					newe.new = delDetail;
-					Vue.set(_this2.deliveriesList, index, newe);
+					Vue.set(_this3.deliveriesList, index, newe);
 				});
 			}
 		},
@@ -938,9 +715,55 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'cart-payment-info'
+	name: 'cart-payment-info',
+	data: function data() {
+		return {
+			paymentsList: [],
+			selectedPayment: '',
+			reload: false
+		};
+	},
+	created: function created() {
+		var _this = this;
+
+		EventBus.$on('nextStep', function (name) {
+			if (_this.$options.name == name) _this.submitForm();
+		});
+
+		this.init();
+	},
+	activated: function activated() {
+		if (this.reload) {
+			this.init();
+			this.reload = false;
+			this.selectedPayment = '';
+		}
+	},
+
+	methods: {
+		init: function init() {
+			var _this2 = this;
+
+			fetch('/data/payments.json', {
+				method: 'GET'
+			}).then(function (response) {
+				if (response.ok) {
+					return response.json();
+				} else {
+					alert("Something went wrong bro :(");
+				}
+			}).then(function (paymentsFetched) {
+				_this2.paymentsList = paymentsFetched;
+			});
+		},
+		submitForm: function submitForm() {
+			EventBus.$emit('cart-next-step');
+		}
+	}
 });
 
 /***/ }),
@@ -952,6 +775,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_findindex__ = __webpack_require__("./node_modules/lodash.findindex/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_findindex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_findindex__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1016,7 +851,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		});
 		EventBus.$emit('refresh-status', this.summary, this.itemsCount);
 		EventBus.$on('nextStep', function (name) {
-			if (_this.$options.name == name) EventBus.$emit('cart-next-step');
+			if (_this.$options.name == name) {
+				if (_this.products.length > 0) EventBus.$emit('cart-next-step');else flash('Košík je prazdný');
+			}
 		});
 	},
 	beforeDestroy: function beforeDestroy() {
@@ -1107,7 +944,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				if (response.ok) {
 					return response.json();
 				} else {
-					alert("Something went wrong bro :(");
+					flash('Zboží se nepodařilo přidat do košíku');
 				}
 			}).then(function (_ref3) {
 				var product = _ref3.product,
@@ -1115,11 +952,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 				_this5.addProd(product);
 				_this5.summary = summary;
+				flash('Zboží bylo přídáno do košíku');
 
 				EventBus.$emit('show-cart');
 			});
 		}
 	}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/cart-steps/CartSummary.vue":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'cart-summary'
 });
 
 /***/ }),
@@ -4096,49 +3952,37 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { attrs: { id: "cart-product-list" } }, [
-    _c(
-      "ul",
-      [
-        _c(
-          "transition-group",
-          { attrs: { name: "list", tag: "p" } },
-          _vm._l(_vm.products, function(product) {
-            return _c("li", { key: product.id }, [
-              _c("div", [
-                _vm._v(
-                  "\n\t\t\t\t\t" +
-                    _vm._s(product.name + " " + product.price * product.count) +
-                    "\n\t\t\t\t\t"
-                ),
-                _c(
-                  "a",
-                  {
-                    attrs: { href: "#" },
-                    on: {
-                      click: function($event) {
-                        $event.preventDefault()
-                        _vm.removeProd(product)
-                      }
-                    }
-                  },
-                  [_vm._v("xxx")]
-                )
+  return _c(
+    "div",
+    { attrs: { id: "cart-product-list" } },
+    [
+      _c(
+        "transition-group",
+        { staticClass: "cart-products", attrs: { name: "list", tag: "ul" } },
+        _vm._l(_vm.products, function(product) {
+          return _c("li", { key: product.id, staticClass: "cart-product" }, [
+            _c("div", { staticClass: "thumbnail" }, [
+              _c("a", { attrs: { href: "#" } }, [
+                _c("img", {
+                  attrs: { src: "/images/prod.png", alt: "mysterybox" }
+                })
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "info" }, [
+              _c("div", { staticClass: "product" }, [
+                _c("a", { attrs: { href: "#" } }, [
+                  _vm._v(_vm._s(product.name))
+                ])
               ]),
               _vm._v(" "),
-              _c(
-                "a",
-                {
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      product.count > 1 ? product.count-- : product.count
-                    }
-                  }
-                },
-                [_vm._v("--")]
-              ),
+              _c("div", { staticClass: "variant" }, [
+                _vm._v("XXL - Purple light")
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "qty" }, [
+              _c("div", { staticClass: "decrease" }, [_vm._v("-")]),
               _vm._v(" "),
               _c("input", {
                 directives: [
@@ -4149,7 +3993,7 @@ var render = function() {
                     expression: "product.count"
                   }
                 ],
-                attrs: { type: "number", min: "1" },
+                attrs: { type: "text", min: "1" },
                 domProps: { value: product.count },
                 on: {
                   blur: function($event) {
@@ -4166,81 +4010,95 @@ var render = function() {
                 }
               }),
               _vm._v(" "),
-              _c(
-                "a",
-                {
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      product.count++
-                    }
+              _c("div", { staticClass: "increase" }, [_vm._v("+")])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "price" }, [
+              _c("div", { staticClass: "base" }, [_vm._v("17 958 Kč bez DPH")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "vat" }, [_vm._v(_vm._s(product.price))])
+            ]),
+            _vm._v(" "),
+            _c("div", {
+              staticClass: "remove",
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  _vm.removeProd(product)
+                }
+              }
+            })
+          ])
+        })
+      ),
+      _vm._v(" "),
+      _vm.products.length == 0
+        ? _c("p", { staticClass: "empty-cart" }, [_vm._v("Košík je prázdný")])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.products.length != 0
+        ? _c("div", { staticClass: "bottom-status" }, [
+            _c("div", [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.voucherCode,
+                    expression: "voucherCode"
                   }
-                },
-                [_vm._v("++")]
-              )
+                ],
+                attrs: { type: "text", placeholder: "Voucher Code" },
+                domProps: { value: _vm.voucherCode },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.voucherCode = $event.target.value
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("button", { on: { click: _vm.voucherValidate } }, [
+                _vm._v("Submit")
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "cart-items-summary" }, [
+              _c("div", { staticClass: "price" }, [
+                _vm._v(
+                  "Cena bez DPH: " +
+                    _vm._s(_vm.summary.price) +
+                    " " +
+                    _vm._s(_vm.summary.currency)
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "vat" }, [
+                _vm._v(
+                  "DPH " +
+                    _vm._s(_vm.summary.vatPrecentage) +
+                    "% " +
+                    _vm._s(_vm.summary.vatAmount) +
+                    " " +
+                    _vm._s(_vm.summary.currency)
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "price-vat" }, [
+                _vm._v(
+                  _vm._s(_vm.summary.priceVat) +
+                    " " +
+                    _vm._s(_vm.summary.currency)
+                )
+              ])
             ])
-          })
-        )
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _vm.products.length == 0 ? _c("p", [_vm._v("Košík je prázdný")]) : _vm._e(),
-    _vm._v(" "),
-    _c("div", { staticClass: "cart-items-summary" }, [
-      _c("div", { staticClass: "price" }, [
-        _vm._v(
-          "Cena bez DPH: " +
-            _vm._s(_vm.summary.price) +
-            " " +
-            _vm._s(_vm.summary.currency)
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "vat" }, [
-        _vm._v(
-          "DPH " +
-            _vm._s(_vm.summary.vatPrecentage) +
-            "% " +
-            _vm._s(_vm.summary.vatAmount) +
-            " " +
-            _vm._s(_vm.summary.currency)
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "price-vat" }, [
-        _vm._v(
-          _vm._s(_vm.summary.priceVat) + " " + _vm._s(_vm.summary.currency)
-        )
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", [
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.voucherCode,
-            expression: "voucherCode"
-          }
-        ],
-        attrs: { type: "text", placeholder: "Voucher Code" },
-        domProps: { value: _vm.voucherCode },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
-            }
-            _vm.voucherCode = $event.target.value
-          }
-        }
-      }),
-      _vm._v(" "),
-      _c("button", { on: { click: _vm.voucherValidate } }, [_vm._v("Submit")])
-    ])
-  ])
+          ])
+        : _vm._e()
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -4249,6 +4107,29 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-0c40cf7c", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-10637fbb\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/cart-steps/CartSummary.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { attrs: { id: "cart-summary-step" } }, [
+    _vm._v("\n    test\n")
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-10637fbb", module.exports)
   }
 }
 
@@ -5522,7 +5403,14 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { attrs: { id: "cart-delivery-info" } }, [
-    _vm._v("\n    Toto je záložka platby\n")
+    _c(
+      "ul",
+      _vm._l(_vm.paymentsList, function(payment) {
+        return _c("li", { key: payment.paymentId }, [
+          _vm._v(_vm._s(payment.name))
+        ])
+      })
+    )
   ])
 }
 var staticRenderFns = []
@@ -5567,20 +5455,12 @@ var render = function() {
             "div",
             { staticClass: "inner-holder" },
             [
-              _c("h2", { staticClass: "cart-main-tittle" }, [
-                _c("span", [
-                  _vm._v(
-                    _vm._s(_vm.stepsArr.indexOf(_vm.currentStep) + 1) +
-                      "/" +
-                      _vm._s(_vm.stepsArr.length)
-                  )
-                ]),
-                _vm._v(" " + _vm._s(_vm.currentStep.label))
-              ]),
-              _vm._v(" "),
               _c(
                 "ul",
-                { staticClass: "cart-setps" },
+                {
+                  staticClass: "cart-setps",
+                  attrs: { "data-active": _vm.currentStep.label }
+                },
                 _vm._l(_vm.stepsArr, function(step) {
                   return _c(
                     "li",
@@ -5614,42 +5494,49 @@ var render = function() {
                 1
               ),
               _vm._v(" "),
-              _c("div", { staticClass: "bottom-controls" }, [
-                _vm.stepsArr.indexOf(_vm.currentStep) != 0
-                  ? _c(
-                      "a",
-                      {
-                        staticClass: "next-step cart-button ghost",
-                        attrs: { href: "#" },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            _vm.prevStep($event)
+              _c(
+                "div",
+                {
+                  staticClass: "bottom-controls",
+                  class: { only: _vm.stepsArr.indexOf(_vm.currentStep) == 0 }
+                },
+                [
+                  _vm.stepsArr.indexOf(_vm.currentStep) != 0
+                    ? _c(
+                        "a",
+                        {
+                          staticClass: "next-step cart-button ghost",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              _vm.prevStep($event)
+                            }
                           }
+                        },
+                        [_vm._v("Zpět")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    {
+                      staticClass: "next-step cart-button",
+                      attrs: { href: "#" },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.EventBus.$emit(
+                            "nextStep",
+                            _vm.currentStep.component
+                          )
                         }
-                      },
-                      [_vm._v("Zpět")]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _c(
-                  "a",
-                  {
-                    staticClass: "next-step cart-button",
-                    attrs: { href: "#" },
-                    on: {
-                      click: function($event) {
-                        $event.preventDefault()
-                        _vm.EventBus.$emit(
-                          "nextStep",
-                          _vm.currentStep.component
-                        )
                       }
-                    }
-                  },
-                  [_vm._v(_vm._s(_vm.currentStep.nextBtn))]
-                )
-              ]),
+                    },
+                    [_vm._v(_vm._s(_vm.currentStep.nextBtn))]
+                  )
+                ]
+              ),
               _vm._v(" "),
               _c(
                 "a",
@@ -16654,6 +16541,289 @@ window.Vue = __WEBPACK_IMPORTED_MODULE_0_vue___default.a;
 
 /***/ }),
 
+/***/ "./resources/assets/js/classes/Form.js":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Validation_js__ = __webpack_require__("./resources/assets/js/classes/Validation.js");
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+
+
+var Form = function () {
+    // data expect this object: {filedName:{value:"",rules:[],errorMsg: ""},...}
+    function Form(data) {
+        _classCallCheck(this, Form);
+
+        this.fieldAttrs = [];
+        this.invalidFields = new Set();
+
+        for (var field in data) {
+            this[field] = {};
+            this[field].value = data[field].hasOwnProperty('value') ? data[field].value : '';
+            this[field].rules = data[field].hasOwnProperty('rules') ? data[field].rules : [];
+            this[field].errorMessage = data[field].hasOwnProperty('errorMessage') ? data[field].errorMessage : "Default Message";
+            this[field].isValid = true;
+
+            this.fieldAttrs.push(field);
+
+            this.serverErrors = [];
+        }
+    }
+
+    _createClass(Form, [{
+        key: 'data',
+        value: function data() {
+            var data = {};
+
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = this.fieldAttrs[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var property = _step.value;
+
+                    data[property] = this[property].value;
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            return data;
+        }
+    }, {
+        key: 'getErrors',
+        value: function getErrors() {
+            var data = {};
+
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = this.invalidFields[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var property = _step2.value;
+
+                    data[property] = this[property].errorMessage;
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
+            }
+
+            return data;
+        }
+    }, {
+        key: 'validate',
+        value: function validate(property) {
+
+            var valid = true;
+            var propertyValue = this[property].value;
+
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+                for (var _iterator3 = this[property].rules[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var rule = _step3.value;
+
+                    var ruleParts = rule.split(':');
+                    var ruleMethod = ruleParts[0];
+                    var ruleArg = ruleParts[1];
+
+                    if (ruleMethod == 'if') {
+                        var ifArgs = ruleArg.split('@');
+
+                        if (this[ifArgs[0]].value == ifArgs[1]) continue;else valid = true;break;
+                    }
+
+                    if (__WEBPACK_IMPORTED_MODULE_0__Validation_js__["a" /* default */].hasOwnProperty(ruleParts[0])) {
+                        var validStep = ruleParts.length == 1 ? __WEBPACK_IMPORTED_MODULE_0__Validation_js__["a" /* default */][ruleMethod](propertyValue) : __WEBPACK_IMPORTED_MODULE_0__Validation_js__["a" /* default */][ruleMethod](propertyValue, ruleArg);
+                        valid = valid && validStep;
+                        if (valid == false) break;
+                    }
+                }
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
+                }
+            }
+
+            if (!valid) {
+                this[property].isValid = false;
+                this.invalidFields.add(property);
+            } else {
+                this[property].isValid = true;
+                this.invalidFields.delete(property);
+            }
+        }
+    }, {
+        key: 'validateAll',
+        value: function validateAll() {
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
+
+            try {
+                for (var _iterator4 = this.fieldAttrs[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var property = _step4.value;
+
+                    this.validate(property);
+                }
+            } catch (err) {
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                        _iterator4.return();
+                    }
+                } finally {
+                    if (_didIteratorError4) {
+                        throw _iteratorError4;
+                    }
+                }
+            }
+        }
+    }, {
+        key: 'isValid',
+        value: function isValid() {
+            this.validateAll();
+
+            if (this.invalidFields.size > 0) return false;
+
+            return true;
+        }
+    }, {
+        key: 'proccesServerErrors',
+        value: function proccesServerErrors(invalidFields) {
+
+            var fieldsArr = [];
+
+            for (var error in invalidFields) {
+                console.log(error);
+                //data[property] = this[property].errorMessage;            
+            }
+        }
+    }, {
+        key: 'submit',
+        value: function submit(method, url) {
+            var _this = this;
+
+            return new Promise(function (resolve, reject) {
+
+                if (_this.isValid()) {
+                    fetch(url, {
+                        method: 'POST',
+                        body: _this.data()
+                    }).then(function (response) {
+                        if (response.ok) {
+                            response.json().then(function (data) {
+                                resolve(data);
+                            });
+                        } else {
+                            response.json().then(function (errs) {
+                                _this.proccesServerErrors(errs);
+                                reject(errs);
+                            });
+                        }
+                    });
+                } else {
+                    reject(_this.getErrors());
+                }
+            });
+        }
+    }, {
+        key: 'post',
+        value: function post(url) {
+            return this.submit('POST', url);
+        }
+    }]);
+
+    return Form;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Form);
+
+/***/ }),
+
+/***/ "./resources/assets/js/classes/Validation.js":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Validation = function () {
+    function Validation() {
+        _classCallCheck(this, Validation);
+    }
+
+    _createClass(Validation, null, [{
+        key: "required",
+        value: function required(value) {
+            return !!value.length;
+        }
+    }, {
+        key: "email",
+        value: function email(value) {
+            var pattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+            return pattern.test(value);
+        }
+    }, {
+        key: "min",
+        value: function min(value, _min) {
+            return value.length >= _min;
+        }
+    }, {
+        key: "max",
+        value: function max(value, min) {
+            return value.length <= min;
+        }
+    }]);
+
+    return Validation;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Validation);
+
+/***/ }),
+
 /***/ "./resources/assets/js/components/CartStatus.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17027,6 +17197,54 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-0c40cf7c", Component.options)
   } else {
     hotAPI.reload("data-v-0c40cf7c", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/cart-steps/CartSummary.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/cart-steps/CartSummary.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-10637fbb\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/cart-steps/CartSummary.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\cart-steps\\CartSummary.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-10637fbb", Component.options)
+  } else {
+    hotAPI.reload("data-v-10637fbb", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true

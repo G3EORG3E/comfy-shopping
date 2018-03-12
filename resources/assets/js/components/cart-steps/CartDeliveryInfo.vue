@@ -2,7 +2,7 @@
 	<div id="cart-delivery-info">
 			<div v-for="delivery in deliveriesList" :key="delivery.id">
 				<label>
-					{{delivery.label}}
+					{{ delivery.label }}
 					<input type="radio" name="delivery" :value="delivery.id" v-model="selectedDelivery" @change="fetchAdditional(delivery.id)">
 				</label>
 				<div class="more-info" v-if="delivery.hasOwnProperty('new') && delivery.id == selectedDelivery">
@@ -22,7 +22,8 @@ export default {
 		return {
 			deliveriesList: [],
 			selectedDelivery: '',
-			selectedPlace: ''
+			selectedPlace: '',
+			reload: false
 		}
 	},
 	created() {
@@ -30,7 +31,19 @@ export default {
 			if(this.$options.name == name) this.submitForm(); 
 		});
 
-		fetch('/data/deliveries.json', {
+		this.init();		
+	},
+	activated() {
+		if(this.reload) {
+			this.init();
+			this.reload = false;
+			this.selectedDelivery = '';
+			this.selectedPlace = '';
+		}
+	},
+	methods: {
+		init() {
+			fetch('/data/deliveries.json', {
 				method: 'GET'
 			})
 			.then(response  => {
@@ -43,8 +56,7 @@ export default {
 			.then((delArrr) => {
 				this.deliveriesList = delArrr;
 			});
-	},
-	methods: {
+		},
 		fetchAdditional(deliveryId) {
 			let index = findIndex(this.deliveriesList, o => { return o.id === deliveryId });
 			if(!this.deliveriesList[index].hasOwnProperty('new')) {

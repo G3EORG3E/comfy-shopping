@@ -171,152 +171,7 @@
 
 <script>
 
-class Validation {
-	static required(value) {
-		return !!value.length;
-	}
-
-	static email(value) {
-		let pattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
-		return pattern.test(value);
-	}
-
-	static min(value,min) {
-		return (value.length >= min);
-	}
-
-	static max(value,min) {
-		return (value.length <= min);
-	}
-}
-
-class Form {
-	// data expect this object: {filedName:{value:"",rules:[],errorMsg: ""},...}
-	constructor(data) {
-		this.fieldAttrs = [];
-		this.invalidFields = new Set();
-
-		for (let field in data) {
-			this[field] = {};
-			this[field].value = (data[field].hasOwnProperty('value') ? data[field].value : '');
-			this[field].rules = (data[field].hasOwnProperty('rules') ? data[field].rules : []);
-			this[field].errorMessage = (data[field].hasOwnProperty('errorMessage') ? data[field].errorMessage : "Default Message");
-			this[field].isValid = true;
-			
-			this.fieldAttrs.push(field);
-
-			this.serverErrors = [];
-		}
-	}
-
-	data() {
-		let data = {};
-
-		for (let property of this.fieldAttrs) {
-			data[property] = this[property].value;            
-		}
-
-		return data;
-	}
-
-	getErrors() {
-		let data = {};
-
-		for (let property of this.invalidFields) {
-			data[property] = this[property].errorMessage;            
-		}
-
-		return data;
-	}
-
-	validate(property) {      
-
-		let valid = true;
-		let propertyValue = this[property].value;
-
-		for (let rule of this[property].rules) {
-			let ruleParts = rule.split(':');
-			let ruleMethod = ruleParts[0];
-			let ruleArg = ruleParts[1]; 
-
-			if (ruleMethod == 'if') {
-				let ifArgs = ruleArg.split('@');
-
-				if((this[ifArgs[0]].value == ifArgs[1])) continue;
-				else valid = true;	break;
-			}
-
-			if(Validation.hasOwnProperty(ruleParts[0])) {
-				let validStep = (ruleParts.length == 1 ? Validation[ruleMethod](propertyValue) : Validation[ruleMethod](propertyValue,ruleArg));
-				valid = valid && validStep;
-				if(valid == false) break;
-			}
-		}
-
-		if(!valid) {
-			this[property].isValid = false;
-			this.invalidFields.add(property);
-		} else {
-			this[property].isValid = true;
-			this.invalidFields.delete(property);
-		}
-	}
-
-	validateAll() {
-		for (let property of this.fieldAttrs) {
-			this.validate(property);         
-		}
-	}
-
-	isValid() {
-		this.validateAll();
-
-		if(this.invalidFields.size > 0) return false;
-
-		return true;
-	}
-
-	proccesServerErrors(invalidFields) {
-
-		let fieldsArr = [];
-
-		for (let error in invalidFields) {
-			console.log(error);
-			//data[property] = this[property].errorMessage;            
-		}
-
-	}
-
-	submit(method,url) {
-		return new Promise((resolve,reject) => {
-
-			if(this.isValid()) {
-				fetch(url, {
-					method: 'POST',  
-					body: this.data()
-				})
-				.then(response => {
-					if(response.ok) {
-						response.json().then(data => {
-							resolve(data);
-						});
-					} else {
-						response.json().then(errs => {
-							this.proccesServerErrors(errs);
-							reject(errs);
-						});
-					}
-				});
-			} else {
-				reject(this.getErrors());
-			}
-		});
-	}
-
-	post(url) {
-		return this.submit('POST',url);
-	}
-}
+import Form from '../../classes/Form.js';
 
 export default {
 	name: 'cart-contact-info',
@@ -324,8 +179,29 @@ export default {
 		return {            
 			countries: [],
 			isLoged: false,
-			form: new Form({
-				email: {
+			form: new Form({}),
+			reload: false
+		};
+	},
+	created() {
+		this.init();		
+
+		EventBus.$on('nextStep', name => {
+			if(this.$options.name == name) this.submitForm();
+		});
+	},
+	activated() {
+		if(this.reload) {
+			this.init();
+			this.reload = false;
+		}
+	},
+	beforeDestroy() {
+		EventBus.$off('nextStep');
+	},
+	methods: {
+		init() {
+			this.form = new Form({email: {
 					rules: ['email','required'],
 					errorMessage: "Zadejte realný email"
 				},
@@ -365,41 +241,30 @@ export default {
 				deliveryHouseCode: {},
 				deliveryCity: {},
 				deliveryCountry: {},
-				deliveryZipCode: {},
-			})
-		};
-	},
-	created() {
-		fetch('/data/registered.json', {
-			method: 'GET'
-		})
-		.then(response => {
-			if(response.ok) {
-				response.json().then(({loged,countries, entities}) => {
-					this.countries = countries;	
-					this.isLoged = loged;				
-					if(loged) {
-						for (let entitiy in entities) {
-							this.form[entitiy].value = 	entities[entitiy];			
-						}
-					}
-				});
-			} else {
-				response.json().then(errs => {
-					
-				});
-			}
-		});
+				deliveryZipCode: {}
+			});
 
-		EventBus.$on('nextStep', name => {
-			if(this.$options.name == name) this.submitForm();
-		});
-		EventBus.$on('destroy-comp', (e) => this.$destroy);
-	},
-	beforeDestroy() {
-		EventBus.$off('nextStep');
-	},
-	methods: {
+			fetch('/data/registered.json', {
+				method: 'GET'
+			})
+			.then(response => {
+				if(response.ok) {
+					response.json().then(({loged,countries, entities}) => {
+						this.countries = countries;	
+						this.isLoged = loged;				
+						if(loged) {
+							for (let entitiy in entities) {
+								this.form[entitiy].value = 	entities[entitiy];			
+							}
+						}
+					});
+				} else {
+					response.json().then(errs => {
+					
+					});
+				}
+			});
+		},
 		submitForm() {
 			this.form.post('/data/form-correct.json')
 			//this.form.post('/data/form-incorrect.php')
