@@ -230,6 +230,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 
@@ -242,15 +245,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             isVisible: false,
+            isLoading: false,
             EventBus: EventBus,
             currentStep: {},
             stepsArr: [{ component: 'cart-product-list', label: 'Košík', nextBtn: 'Osobní údaje', accessible: false }, { component: 'cart-contact-info', label: 'Osboní údaje', nextBtn: 'Vybrat dopravu', accessible: false }, { component: 'cart-delivery-info', label: 'Doprava', nextBtn: 'Vybrat platbu', accessible: false }, { component: 'cart-payment-info', label: 'Platba', nextBtn: 'Dokončit objednávku', accessible: false }, { component: 'cart-summary', label: 'Shrnutí', nextBtn: 'Potvrdit', accessible: false }]
         };
     },
     created: function created() {
+        var _this = this;
+
         this.currentStep = this.stepsArr[0];
         EventBus.$on('show-cart', this.showCart);
         EventBus.$on('cart-next-step', this.nextStep);
+        EventBus.$on('init-loading', function () {
+            return _this.isLoading = true;
+        });
+        EventBus.$on('destroy-loading', function () {
+            return _this.isLoading = false;
+        });
     },
 
     components: {
@@ -270,20 +282,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             document.getElementById('page-grid').classList.remove('active-cart');
         },
         processStep: function processStep(step) {
-            var _this = this;
-
             var index = __WEBPACK_IMPORTED_MODULE_5_lodash_findindex___default()(this.stepsArr, function (o) {
                 return o.component === step.component;
-            });
-            var activeIntdex = __WEBPACK_IMPORTED_MODULE_5_lodash_findindex___default()(this.stepsArr, function (o) {
-                return o.component === _this.currentStep.component;
             });
 
             if (step.accessible) {
                 this.currentStep = step;
-                for (var i = index; i < activeIntdex; i++) {
+                for (var i = index; i < this.stepsArr.length; i++) {
                     this.stepsArr[i].accessible = false;
-                    this.$children[i].$data.reload = true;
+                    if (this.$children.length > i) this.$children[i].$data.reload = true;
                 }
             }
         },
@@ -499,7 +506,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			countries: [],
 			isLoged: false,
 			form: new __WEBPACK_IMPORTED_MODULE_0__classes_Form_js__["a" /* default */]({}),
-			reload: false
+			reload: false,
+			tiemout: null
 		};
 	},
 	created: function created() {
@@ -590,6 +598,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				}
 			});
 		},
+		debounce: function debounce(func, wait, immediate) {
+			var context = this,
+			    args = arguments;
+			clearTimeout(this.timeout);
+			this.timeout = setTimeout(function () {
+				this.timeout = null;
+				if (!immediate) func.apply(context, args);
+			}, wait);
+			if (immediate && !this.timeout) func.apply(context, args);
+		},
 		submitForm: function submitForm() {
 			this.form.post('/data/form-correct.json')
 			//this.form.post('/data/form-incorrect.php')
@@ -627,6 +645,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -638,6 +664,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			selectedPlace: '',
 			reload: false
 		};
+	},
+
+	watch: {
+		selectedDelivery: function selectedDelivery(id) {
+			this.fetchAdditional(id);
+		}
 	},
 	created: function created() {
 		var _this = this;
@@ -661,16 +693,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		init: function init() {
 			var _this2 = this;
 
-			fetch('/data/deliveries.json', {
+			fetch('/data/delivery.json', {
 				method: 'GET'
 			}).then(function (response) {
 				if (response.ok) {
 					return response.json();
 				} else {
-					alert("Something went wrong bro :(");
+					flash("Nastale neočekavaná chyba, zkuste to později.");
 				}
-			}).then(function (delArrr) {
-				_this2.deliveriesList = delArrr;
+			}).then(function (deliveriesArr) {
+				_this2.deliveriesList = deliveriesArr;
+				if (_this2.deliveriesList.length) {
+					_this2.selectedDelivery = _this2.deliveriesList[0].id;
+				}
 			});
 		},
 		fetchAdditional: function fetchAdditional(deliveryId) {
@@ -679,7 +714,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			var index = __WEBPACK_IMPORTED_MODULE_0_lodash_findindex___default()(this.deliveriesList, function (o) {
 				return o.id === deliveryId;
 			});
-			if (!this.deliveriesList[index].hasOwnProperty('new')) {
+			if (!this.deliveriesList[index].hasOwnProperty('aditional')) {
 				fetch('/data/delivery-detail.json', {
 					method: 'POST',
 					body: { id: deliveryId }
@@ -687,12 +722,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 					if (response.ok) {
 						return response.json();
 					} else {
-						alert("Something went wrong bro :(");
+						flash("Nastale neočekavaná chyba, zkuste to později.");
 					}
 				}).then(function (delDetail) {
-					var newe = _this3.deliveriesList[index];
-					newe.new = delDetail;
-					Vue.set(_this3.deliveriesList, index, newe);
+					var forUpdate = _this3.deliveriesList[index];
+					forUpdate.aditional = delDetail;
+					Vue.set(_this3.deliveriesList, index, forUpdate);
+
+					console.log(delDetail);
+
+					if (delDetail.places.length) {
+						_this3.selectedPlace = delDetail.places[0].placeId;
+					}
 				});
 			}
 		},
@@ -709,6 +750,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -748,7 +797,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		init: function init() {
 			var _this2 = this;
 
-			fetch('/data/payments.json', {
+			fetch('/data/payment.json', {
 				method: 'GET'
 			}).then(function (response) {
 				if (response.ok) {
@@ -895,9 +944,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		voucherValidate: function voucherValidate() {
 			var _this3 = this;
 
+			EventBus.$emit('init-loading');
 			fetch('/data/voucher-response.json', {
 				method: 'POST'
 			}).then(function (response) {
+				EventBus.$emit('destroy-loading');
 				if (response.ok) {
 					return response.json();
 				} else {
@@ -3981,7 +4032,18 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "qty" }, [
-              _c("div", { staticClass: "decrease" }, [_vm._v("-")]),
+              _c(
+                "div",
+                {
+                  staticClass: "decrease",
+                  on: {
+                    click: function($event) {
+                      product.count--
+                    }
+                  }
+                },
+                [_vm._v("-")]
+              ),
               _vm._v(" "),
               _c("input", {
                 directives: [
@@ -4009,7 +4071,18 @@ var render = function() {
                 }
               }),
               _vm._v(" "),
-              _c("div", { staticClass: "increase" }, [_vm._v("+")])
+              _c(
+                "div",
+                {
+                  staticClass: "increase",
+                  on: {
+                    click: function($event) {
+                      product.count++
+                    }
+                  }
+                },
+                [_vm._v("+")]
+              )
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "price" }, [
@@ -4164,9 +4237,8 @@ var render = function() {
     "div",
     { attrs: { id: "cart-delivery-info" } },
     _vm._l(_vm.deliveriesList, function(delivery) {
-      return _c("div", { key: delivery.id }, [
+      return _c("div", { key: delivery.id, staticClass: "delivery-item" }, [
         _c("label", [
-          _vm._v("\n\t\t\t\t" + _vm._s(delivery.label) + "\n\t\t\t\t"),
           _c("input", {
             directives: [
               {
@@ -4182,21 +4254,37 @@ var render = function() {
               checked: _vm._q(_vm.selectedDelivery, delivery.id)
             },
             on: {
-              change: [
-                function($event) {
-                  _vm.selectedDelivery = delivery.id
-                },
-                function($event) {
-                  _vm.fetchAdditional(delivery.id)
-                }
-              ]
+              change: function($event) {
+                _vm.selectedDelivery = delivery.id
+              }
             }
-          })
+          }),
+          _vm._v(" "),
+          _c("span", { staticClass: "thumbnail" }, [
+            _c("img", { attrs: { src: delivery.image, alt: delivery.label } })
+          ]),
+          _vm._v(" "),
+          _c("span", { staticClass: "name" }, [_vm._v(_vm._s(delivery.label))]),
+          _vm._v(" "),
+          _c("span", { staticClass: "desc" }, [
+            _vm._v(_vm._s(delivery.description))
+          ]),
+          _vm._v(" "),
+          _c("span", { staticClass: "price" }, [_vm._v(_vm._s(delivery.price))])
         ]),
         _vm._v(" "),
-        delivery.hasOwnProperty("new") && delivery.id == _vm.selectedDelivery
+        delivery.hasOwnProperty("aditional") &&
+        delivery.id == _vm.selectedDelivery
           ? _c("div", { staticClass: "more-info" }, [
-              delivery.hasOwnProperty("new")
+              _c("p", { staticClass: "full-description" }, [
+                _vm._v(
+                  "\n                        " +
+                    _vm._s(delivery.aditional.fullDescription) +
+                    "\n                    "
+                )
+              ]),
+              _vm._v(" "),
+              delivery.hasOwnProperty("aditional")
                 ? _c(
                     "select",
                     {
@@ -4225,7 +4313,7 @@ var render = function() {
                         }
                       }
                     },
-                    _vm._l(delivery.new.places, function(place) {
+                    _vm._l(delivery.aditional.places, function(place) {
                       return _c(
                         "option",
                         {
@@ -4310,7 +4398,7 @@ var render = function() {
             _vm.submitForm($event)
           },
           keyup: function($event) {
-            _vm.form.validate($event.target.name)
+            _vm.debounce(_vm.form.validate($event.target.name), 500)
           }
         }
       },
@@ -5395,16 +5483,48 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { attrs: { id: "cart-delivery-info" } }, [
-    _c(
-      "ul",
-      _vm._l(_vm.paymentsList, function(payment) {
-        return _c("li", { key: payment.paymentId }, [
-          _vm._v(_vm._s(payment.name))
+  return _c(
+    "div",
+    { attrs: { id: "cart-delivery-info" } },
+    _vm._l(_vm.paymentsList, function(payment) {
+      return _c("div", { key: payment.id, staticClass: "delivery-item" }, [
+        _c("label", [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.selectedPayment,
+                expression: "selectedPayment"
+              }
+            ],
+            attrs: { type: "radio", name: "payment" },
+            domProps: {
+              value: payment.id,
+              checked: _vm._q(_vm.selectedPayment, payment.id)
+            },
+            on: {
+              change: function($event) {
+                _vm.selectedPayment = payment.id
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("span", { staticClass: "thumbnail" }, [
+            _c("img", { attrs: { src: payment.image, alt: payment.label } })
+          ]),
+          _vm._v(" "),
+          _c("span", { staticClass: "name" }, [_vm._v(_vm._s(payment.label))]),
+          _vm._v(" "),
+          _c("span", { staticClass: "desc" }, [
+            _vm._v(_vm._s(payment.description))
+          ]),
+          _vm._v(" "),
+          _c("span", { staticClass: "price" }, [_vm._v(_vm._s(payment.price))])
         ])
-      })
-    )
-  ])
+      ])
+    })
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -5437,6 +5557,7 @@ var render = function() {
         "div",
         {
           staticClass: "cart-holder",
+          class: { loading: _vm.isLoading },
           on: {
             click: function($event) {
               $event.stopPropagation()
@@ -5547,13 +5668,26 @@ var render = function() {
               )
             ],
             1
-          )
+          ),
+          _vm._v(" "),
+          _vm._m(0)
         ]
       )
     ]
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "threedotloader" }, [
+      _c("div", { staticClass: "dot" }),
+      _c("div", { staticClass: "dot" }),
+      _c("div", { staticClass: "dot" })
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {

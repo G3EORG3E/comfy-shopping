@@ -1,13 +1,21 @@
 <template>
 	<div id="cart-delivery-info">
-			<div v-for="delivery in deliveriesList" :key="delivery.id">
+			<div v-for="delivery in deliveriesList" :key="delivery.id" class="delivery-item">
 				<label>
-					{{ delivery.label }}
-					<input type="radio" name="delivery" :value="delivery.id" v-model="selectedDelivery" @change="fetchAdditional(delivery.id)">
+					<input type="radio" name="delivery" :value="delivery.id" v-model="selectedDelivery">
+                    <span class="thumbnail">
+                        <img :src="delivery.image" :alt="delivery.label">
+                    </span>
+                    <span class="name">{{ delivery.label }}</span>
+                    <span class="desc">{{ delivery.description }}</span>
+					<span class="price">{{ delivery.price }}</span>
 				</label>
-				<div class="more-info" v-if="delivery.hasOwnProperty('new') && delivery.id == selectedDelivery">
-					<select id="zasilkovna" v-if="delivery.hasOwnProperty('new')" v-model="selectedPlace">
-						<option v-for="place in delivery.new.places" :key="place.placeId" :value="place.placeId">{{place.placeLabel}}</option>
+				<div class="more-info" v-if="delivery.hasOwnProperty('aditional') && delivery.id == selectedDelivery">
+                    <p class="full-description">
+                        {{delivery.aditional.fullDescription}}
+                    </p>
+					<select id="zasilkovna" v-if="delivery.hasOwnProperty('aditional')" v-model="selectedPlace">
+						<option v-for="place in delivery.aditional.places" :key="place.placeId" :value="place.placeId">{{place.placeLabel}}</option>
 					</select>
 				</div>
 			</div>
@@ -25,7 +33,12 @@ export default {
 			selectedPlace: '',
 			reload: false
 		}
-	},
+    },
+    watch: {
+        selectedDelivery(id) {
+            this.fetchAdditional(id);
+        }
+    },
 	created() {
 		EventBus.$on('nextStep', name => {
 			if(this.$options.name == name) this.submitForm(); 
@@ -43,23 +56,26 @@ export default {
 	},
 	methods: {
 		init() {
-			fetch('/data/deliveries.json', {
+			fetch('/data/delivery.json', {
 				method: 'GET'
 			})
 			.then(response  => {
 				if(response.ok) {
 					return response.json();
 				} else {
-					alert("Something went wrong bro :(");
+					flash("Nastale neočekavaná chyba, zkuste to později.");
 				}
 			})
-			.then((delArrr) => {
-				this.deliveriesList = delArrr;
-			});
-		},
+			.then((deliveriesArr) => {
+                this.deliveriesList = deliveriesArr;
+                if(this.deliveriesList.length) {
+                    this.selectedDelivery = this.deliveriesList[0].id;
+                }                
+            });
+		}, 
 		fetchAdditional(deliveryId) {
 			let index = findIndex(this.deliveriesList, o => { return o.id === deliveryId });
-			if(!this.deliveriesList[index].hasOwnProperty('new')) {
+			if(!this.deliveriesList[index].hasOwnProperty('aditional')) {
 				fetch('/data/delivery-detail.json', {
 					method: 'POST',
 					body: {id: deliveryId}
@@ -68,13 +84,19 @@ export default {
 					if(response.ok) {
 						return response.json();
 					} else {
-						alert("Something went wrong bro :(");
+						flash("Nastale neočekavaná chyba, zkuste to později.");
 					}
 				})
 				.then((delDetail) => {
-					let newe = this.deliveriesList[index]
-					newe.new = delDetail;
-					Vue.set(this.deliveriesList, index, newe)
+					let forUpdate = this.deliveriesList[index];
+					forUpdate.aditional = delDetail;
+                    Vue.set(this.deliveriesList, index, forUpdate);
+
+                    console.log(delDetail);
+
+                    if(delDetail.places.length) {
+                        this.selectedPlace = delDetail.places[0].placeId;
+                    }
 				});
 			}
 		},

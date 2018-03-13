@@ -12,9 +12,9 @@
 					<div class="variant">XXL - Purple light</div>
 				</div>
 				<div class="qty">
-					<div class="decrease">-</div>
+					<div class="decrease" @click="product.count--">-</div>
 					<input type="text" v-model="product.count" min="1" @blur="(product.count < 1 ? product.count=1 : product.count= Math.floor(product.count))">
-					<div class="increase">+</div>
+					<div class="increase" @click="product.count++">+</div>
 				</div>
 				<div class="price">
 					<div class="base">17 958 Kč bez DPH</div>
@@ -111,14 +111,16 @@ export default {
 			});
 		},
 		voucherValidate() {
+            EventBus.$emit('init-loading');
 			fetch('/data/voucher-response.json', {
 				method: 'POST'
 			})
 			.then(response  => {
-				if(response.ok) {
-					return response.json();
+                EventBus.$emit('destroy-loading');
+                if(response.ok) {
+                    return response.json();
 				} else {
-					alert("Something went wrong bro :(");
+                    alert("Something went wrong bro :(");
 				}
 			})
 			.then(({isValid,summary}) => {

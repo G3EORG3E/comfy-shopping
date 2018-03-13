@@ -30,14 +30,14 @@
             <?php foreach ($prodArray as $produkt): ?>
                 <div class="product">
                     <div class="name"><?= htmlspecialchars($produkt->name) ?></div>
-                    <a href="#" class="add-product-to-cart">pridaj</a>
+                    <a href="#" class="add-product-to-cart" data-product-id="1" data-product-variant="" data>pridaj</a>
                 </div>        
             <?php endforeach; ?>
         </div>
     </div>
+    <quick-detail></quick-detail>
     <shopping-cart></shopping-cart>
     <flash-message message=""></flash-message>
-
 </div>
 
 

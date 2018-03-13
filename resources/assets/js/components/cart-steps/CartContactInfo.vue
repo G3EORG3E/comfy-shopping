@@ -1,6 +1,6 @@
 <template>
 	<div id="cart-contact-info">	
-		<form @submit.prevent="submitForm" @keyup="form.validate($event.target.name)">
+		<form @submit.prevent="submitForm" @keyup="debounce(form.validate($event.target.name),500)">
 			<div class="form-row">
 				<div class="form-col col-1" :class="{ hasError: !form.email.isValid }">
 					<label>E-mail</label>
@@ -180,7 +180,8 @@ export default {
 			countries: [],
 			isLoged: false,
 			form: new Form({}),
-			reload: false
+            reload: false,
+            tiemout: null
 		};
 	},
 	created() {
@@ -264,7 +265,16 @@ export default {
 					});
 				}
 			});
-		},
+        },
+        debounce(func, wait, immediate) {
+                var context = this, args = arguments;
+                clearTimeout(this.timeout);
+                this.timeout = setTimeout(function() {
+                    this.timeout = null;
+                    if (!immediate) func.apply(context, args);
+                }, wait);
+                if (immediate && !this.timeout) func.apply(context, args);
+        },
 		submitForm() {
 			this.form.post('/data/form-correct.json')
 			//this.form.post('/data/form-incorrect.php')

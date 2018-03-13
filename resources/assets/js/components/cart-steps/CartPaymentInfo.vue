@@ -1,8 +1,16 @@
 <template>
-	<div id="cart-delivery-info">
-		<ul>
-            <li v-for="payment in paymentsList" :key="payment.paymentId">{{ payment.name }}</li>
-        </ul>
+    <div id="cart-delivery-info">
+			<div v-for="payment in paymentsList" :key="payment.id" class="delivery-item">
+				<label>
+					<input type="radio" name="payment" :value="payment.id" v-model="selectedPayment">
+                    <span class="thumbnail">
+                        <img :src="payment.image" :alt="payment.label">
+                    </span>
+                    <span class="name">{{ payment.label }}</span>
+                    <span class="desc">{{ payment.description }}</span>
+					<span class="price">{{ payment.price }}</span>
+				</label>
+			</div>
 	</div>
 </template>
 
@@ -33,7 +41,7 @@ name: 'cart-payment-info',
 	},
 	methods: {
 		init() {
-			fetch('/data/payments.json', {
+			fetch('/data/payment.json', {
 				method: 'GET'
 			})
 			.then(response  => {

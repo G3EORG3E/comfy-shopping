@@ -2,27 +2,71 @@
 	.form-row {
 		display: flex;
 		flex-wrap: wrap;
-		justify-content: space-between;
+        justify-content: space-between;
+        margin-bottom: 15px;
 
 		label {
-			display: inline-block;
+            display: inline-block;
+            //order: 2;
+            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 3px;
+            color: $cart-basic-color;
 		}
-
+        
 		input[type=text],input[type=password],input[type=email],input[type=phone],select {
+            color: $cart-basic-color;
 			width: 100%;
-			display: block;
-		}
+            display: block;
+            border: none;
+            background: transparent;
+            border: 1px solid rgba($color: $cart-main-color, $alpha: .2);
+            padding: 7px 8px;
+            font-size: 15px;
+            outline: 0;
+            transition: all .35s ease-in-out;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.42);
+
+            &:focus {
+                border-bottom-color: $cart-main-color;
+            }
+        }
+        
+        input[type=radio], input[type=checkbox] {
+
+            & ~ label {
+                vertical-align: middle;
+                padding-top: 5px;
+            }
+        }        
 	}
 
 	.form-col {
-		.form-error {
-			display: none;
-		}
+        position: relative;
 
+		.form-error {
+            display: none;
+            font-weight: 500;
+            font-size: 13px;
+            padding: 2px 0 0 3px;
+		}
+        
 		&.hasError {
+            color: $cart-error;
 			.form-error {
 				display: block;
-			}
+            }
+            
+            label {
+                color: $cart-error;
+            }
+
+            input {
+                border-color: $cart-error;
+                color: $cart-error;
+            }
 		}
 		&.col-1 {
 			width: 100%;

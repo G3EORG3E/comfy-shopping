@@ -1,6 +1,6 @@
 <template>
     <div id="shopping-cart" :class="{ active: isVisible }" @click="hideCart">
-        <div class="cart-holder" @click.stop>
+        <div class="cart-holder" @click.stop :class="{ loading: isLoading }">
             <div class="inner-holder">  
                 <!-- <h2 class="cart-main-tittle"><span>{{stepsArr.indexOf(currentStep)+1}}/{{stepsArr.length}}</span> {{ currentStep.label }}</h2>-->
                 <ul class="cart-setps" :data-active="currentStep.label">
@@ -21,6 +21,9 @@
                 </div>
                 <a href="#" class="get-back" @click.prevent="hideCart">Vrátit se k nakupování</a>
             </div>
+            <div class="threedotloader">
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            </div>
         </div>
     </div>
 </template>
@@ -37,6 +40,7 @@ export default {
     data() {
         return {
             isVisible: false,
+            isLoading: false,
             EventBus: EventBus,
             currentStep: {},
             stepsArr: [
@@ -52,6 +56,8 @@ export default {
         this.currentStep = this.stepsArr[0];
         EventBus.$on('show-cart', this.showCart);
         EventBus.$on('cart-next-step', this.nextStep);
+        EventBus.$on('init-loading', () => this.isLoading = true);
+        EventBus.$on('destroy-loading', () => this.isLoading = false);
     },
     components: {
         'cart-product-list': cartProductList,
@@ -71,13 +77,12 @@ export default {
         },
         processStep(step) {
             let index = findIndex(this.stepsArr, o => { return o.component === step.component });
-            let activeIntdex = findIndex(this.stepsArr, o => { return o.component === this.currentStep.component });
 
             if(step.accessible) {
                 this.currentStep = step;
-                for (let i = index; i < activeIntdex; i++) {
+                for (let i = index; i < this.stepsArr.length; i++) {
                     this.stepsArr[i].accessible = false;  
-                    this.$children[i].$data.reload = true;   
+                    if(this.$children.length > i) this.$children[i].$data.reload = true;   
                 }
             } 
         },

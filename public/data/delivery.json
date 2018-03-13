@@ -1,0 +1,26 @@
+[
+    {
+        "label": "PPL",
+        "name": "delivery",
+        "image": "/images/deliveries/ppl.png",
+        "id": 1,
+        "description": "2-3 pracovní dny",
+        "price": "70 Kč"
+    },
+    {
+        "label": "DPD",
+        "name": "delivery",
+        "image": "/images/deliveries/dpd.png",
+        "id": 2,
+        "description": "Nasledujicí pracovní den",
+        "price": "89 Kč"
+    },
+    {
+        "label": "Zásilkovna",
+        "name": "delivery",
+        "image": "/images/deliveries/zasilkovna.png",
+        "id": 3,
+        "description": "5 pracovních dnů",
+        "price": "Zdarma"    
+    }
+]
