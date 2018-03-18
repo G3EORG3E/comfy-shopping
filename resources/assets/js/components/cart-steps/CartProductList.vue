@@ -1,24 +1,24 @@
 <template>
 	<div id="cart-product-list">	
 		<transition-group name="list" tag="ul" class="cart-products">
-			<li class="cart-product" v-for="product in products" :key="product.id">
+			<li class="cart-product" v-for="product in products" :key="'product'+product.productId+'varaint'+product.variantId">
 				<div class="thumbnail">
-					<a href="#"><img src="/images/prod.png" alt="mysterybox"></a>
+					<a href="#"><img :src="product.image" :alt="product.productName"></a>
 				</div>
 				<div class="info">
 					<div class="product">
-						<a href="#">{{ product.name }}</a>
+						<a href="#">{{ product.productName }}</a>
 					</div>
-					<div class="variant">XXL - Purple light</div>
+					<div class="variant">{{ product.variantName }}</div>
 				</div>
-				<div class="qty">
-					<div class="decrease" @click="product.count--">-</div>
-					<input type="text" v-model="product.count" min="1" @blur="(product.count < 1 ? product.count=1 : product.count= Math.floor(product.count))">
-					<div class="increase" @click="product.count++">+</div>
+				<div class="qty inc-dec-comp">
+					<div class="decrease" @click="changeProductCount(product,'dec')">-</div>
+					<input type="text" v-model="product.amount" min="1" @blur="(product.amount < 1 ? product.amount=1 : product.amount= Math.floor(product.amount))">
+					<div class="increase" @click="changeProductCount(product,'inc')">+</div>
 				</div>
 				<div class="price">
-					<div class="base">17 958 Kč bez DPH</div>
-					<div class="vat">{{ product.price }}</div>
+					<div class="base">{{ product.price }}</div>
+					<div class="vat">{{ product.priceVAT }}</div>
 				</div>
 				<div class="remove" @click.prevent="removeProd(product)"></div>
 			</li>
@@ -28,10 +28,13 @@
 			<div>
 				<input type="text" placeholder="Voucher Code" v-model="voucherCode">
 				<button @click="voucherValidate">Submit</button>
+				<div v-if="activeVoucher">
+					<a href="#" @click.prevent="removeVoucher">Odstranit Voucher</a>
+				</div>
 			</div>
 			<div class="cart-items-summary">
-				<div class="price">Cena bez DPH: <strong>{{ summary.price }} {{ summary.currency }}</strong></div>
-				<div class="price-vat">Cena s DPH: <strong>{{ summary.priceVat }} {{ summary.currency }}</strong></div>
+				<div class="price">Cena bez DPH: <strong>{{ summary.price }} </strong></div>
+				<div class="price-vat">Cena s DPH: <strong>{{ summary.priceVAT }}</strong></div>
 			</div>
 		</div>
 	</div>
@@ -46,7 +49,8 @@ export default {
 		return {
 			products: [],
 			summary: {},
-			voucherCode: ''
+			voucherCode: '',
+			activeVoucher: false
 		}; 
 	},
 	computed: {
@@ -68,7 +72,7 @@ export default {
 		EventBus.$emit('refresh-status', this.summary, this.itemsCount );
 		EventBus.$on('nextStep', (name) => {
 			if(this.$options.name == name) {
-				if(this.products.length > 0)
+				if(this.products.length > 0) 
 					EventBus.$emit('cart-next-step');
 				else 
 					flash('Košík je prazdný');
@@ -81,22 +85,53 @@ export default {
 	},   
 	methods: {
 		addProd(prod) {
-			let index = findIndex(this.products, o => { return o.id === prod.id });
+			let index = findIndex(this.products, o => { return o.productId === prod.productId && o.variantId === prod.variantId });
 
 			if(index === -1) {
-				prod.count = 1;
 				this.products.push(prod);
 			}
-			else {
-				this.products[index].count++;                
-				Vue.set(this.products, index, this.products[index]);
+			else {             
+				Vue.set(this.products, index, prod);
 			}
 		},
-		removeProd(prod) {
-			fetch('/data/remove-response.json', {
-				method: 'GET'
+		changeProductCount(prod,method) {
+			if (method == 'inc') {
+				prod.amount++;
+			} else {
+				prod.amount--;
+			}
+			EventBus.$emit('init-loading');
+			fetch('http://cartapi.nettrender.com/api/cart/change/amount', {
+				method: 'POST',  
+				body: JSON.stringify({productId: prod.productId,variantId: prod.variantId, amount: prod.amount}),
+				headers: new Headers({
+                	'Content-Type': 'application/json'
+            	})
 			})
 			.then(response  => {
+				EventBus.$emit('destroy-loading');
+				if(response.ok) {
+					return response.json();
+				} else {
+					alert("Something went wrong bro :(");
+				}
+			})
+			.then(({summary,product}) => {
+				this.addProd(product);
+				this.summary = summary;
+			});
+		},
+		removeProd(prod) {
+			EventBus.$emit('init-loading');
+			fetch('http://cartapi.nettrender.com/api/cart/product/remove', {
+				method: 'POST',  
+				body: JSON.stringify({productId: prod.productId,variantId: prod.variantId}),
+				headers: new Headers({
+                	'Content-Type': 'application/json'
+            	})
+			})
+			.then(response  => {
+				EventBus.$emit('destroy-loading');
 				if(response.ok) {
 					return response.json();
 				} else {
@@ -110,32 +145,55 @@ export default {
 				this.summary = summary;
 			});
 		},
-		voucherValidate() {
-            EventBus.$emit('init-loading');
-			fetch('/data/voucher-response.json', {
+		removeVoucher() {
+			EventBus.$emit('init-loading');
+			fetch('http://cartapi.nettrender.com/api/cart/voucher/remove', {
 				method: 'POST'
 			})
 			.then(response  => {
                 EventBus.$emit('destroy-loading');
                 if(response.ok) {
-                    return response.json();
+                    response.json().then(summary => {
+						this.summary = summary;
+						this.activeVoucher = false;
+						flash("Voucher odstraněn");
+					});
 				} else {
-                    alert("Something went wrong bro :(");
+                    flash("Voucher se nepodařilo odstrnait");
 				}
+			}); 
+		},
+		voucherValidate() {
+            EventBus.$emit('init-loading');
+			fetch('http://cartapi.nettrender.com/api/cart/voucher/apply', {
+				method: 'POST',  
+				body: JSON.stringify({ voucherCode: this.voucherCode }),
+				headers: new Headers({
+                	'Content-Type': 'application/json'
+            	})
 			})
-			.then(({isValid,summary}) => {
-				if(isValid) {
-					this.summary = summary;
+			.then(response  => {
+                EventBus.$emit('destroy-loading');
+                if(response.ok) {
+                    response.json().then(summary => {
+						this.summary = summary;
+						this.activeVoucher = true;
+					});
 				} else {
-					alert('Nah bro wrong code :(');
+                    response.json().then(error => {
+						flash(error.error);
+					});
 				}
 			});
 		},
 		fetchInit() {
-			fetch('/data/all-cart.json', {
-				method: 'GET'
+			EventBus.$emit('init-loading');
+			fetch('http://cartapi.nettrender.com/api/cart/get', {
+				method: 'POST',
+				credentials: 'same-origin'
 			})
 			.then(response  => {
+				EventBus.$emit('destroy-loading');
 				if(response.ok) {
 					return response.json();
 				} else {
@@ -148,11 +206,17 @@ export default {
 			});
 		},
 		fetchOnAdd(product) {
-			fetch('/data/added-product.json', {
+			EventBus.$emit('init-loading');
+			EventBus.$emit('show-cart');
+			fetch('http://cartapi.nettrender.com/api/cart/product/add', {
 				method: 'POST',  
-				body: product
+				body: JSON.stringify(product),
+				headers: new Headers({
+                	'Content-Type': 'application/json'
+            	})
 			})
 			.then(response  => {
+				EventBus.$emit('destroy-loading');
 				if(response.ok) {
 					return response.json();					
 
@@ -164,8 +228,7 @@ export default {
 				this.addProd(product);
 				this.summary = summary;
 				flash('Zboží bylo přídáno do košíku');
-
-				EventBus.$emit('show-cart');
+				
 			});
 		}
 	}

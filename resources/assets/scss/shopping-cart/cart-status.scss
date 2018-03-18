@@ -3,13 +3,12 @@
 	top: 0;
 	right: 0;
 	height: 100%;
-	background: #1c1d1f;
 	color: #fff;
 	display: flex;
 	align-items: center;
 	padding: 0 50px;
 	border-radius: 9px 0 0 9px;
-	background: linear-gradient(to right, #dc9ef7 0%,#8e9afc 100%);
+	background: $main-gradient;
 	cursor: pointer;
 
 	.ico {
@@ -20,8 +19,8 @@
 	}
 	.items-count {
 		position: absolute;
-		background: #d6c6ff;
-		color: #8e79c5;
+		background: lighten(saturate( $cart-main-color, 20% ), $amount: 25%);
+		color: lighten(saturate( $cart-main-color, 20% ), $amount: 5%);
 		border-radius: 50%;
 		width: 21px;
 		line-height: 19px;
@@ -30,7 +29,6 @@
 		font-weight: bold;
 		top: -9px;
 		right: -9px;
-		border: 1px solid #be9cf8;
 	}
 
 	.price {

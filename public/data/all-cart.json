@@ -14,3 +14,28 @@
         "priceVat": "752 Kč"
     }
 }
+
+{
+    "products": [
+        {
+            "ordering": 1,
+            "productId": 1,
+            "variantId": 1,
+            "code": "0001",
+            "productName": "iPhone 8 Black",
+            "variantName": "32 GB",
+            "image": "\/images\/iphone8b.png",
+            "amount": 1,
+            "amountUnit": "pieces",
+            "price": "15390 K\u010d",
+            "priceVAT": "12158.1 K\u010d",
+            "stockCount": "5 ks"
+        }
+    ],
+    "summary": {
+        "price": "12158.1 K\u010d",
+        "priceVAT": "15390 K\u010d",
+        "taxPrecentage": 21,
+        "taxValue": "3231.9 K\u010d"
+    }
+}

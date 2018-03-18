@@ -202,6 +202,8 @@ export default {
 	},
 	methods: {
 		init() {
+			EventBus.$emit('init-loading');
+
 			this.form = new Form({email: {
 					rules: ['email','required'],
 					errorMessage: "Zadejte realný email"
@@ -249,6 +251,7 @@ export default {
 				method: 'GET'
 			})
 			.then(response => {
+				EventBus.$emit('destroy-loading');
 				if(response.ok) {
 					response.json().then(({loged,countries, entities}) => {
 						this.countries = countries;	
@@ -276,12 +279,15 @@ export default {
                 if (immediate && !this.timeout) func.apply(context, args);
         },
 		submitForm() {
+			EventBus.$emit('init-loading');
 			this.form.post('/data/form-correct.json')
 			//this.form.post('/data/form-incorrect.php')
 			.then((data) => {
+				EventBus.$emit('destroy-loading');
 				EventBus.$emit('cart-next-step');
 			})
 			.catch((errors) => {
+				EventBus.$emit('destroy-loading');
 				flash('Některé údaje jste zadali špatně');
 			});			
 		}

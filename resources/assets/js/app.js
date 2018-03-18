@@ -1,28 +1,39 @@
 import './bootstrap';
 import shoppingCart from './components/ShoppingCart.vue';
-import productItem from './components/ProductItem.vue';
 import cartStatus from './components/CartStatus.vue';
-import flashMessage from './components/FlashMessage.vue'
+import flashMessage from './components/FlashMessage.vue';
+import productDetail from './components/ProductDetail.vue';
+import Translation from './classes/Translation.js';
+
 
 window.EventBus = new Vue();
 window.flash = message =>  EventBus.$emit('flash', message);
+window.__ = translateKey => Translation.getTranslate(translateKey);
 
 let app = new Vue({
     el: '#root',
-    components: {      
-        productItem,
+    components: {    
         shoppingCart,
         cartStatus,
-        flashMessage
-    }
+        flashMessage,
+        productDetail
+    },
+    created() {
+        EventBus.$on('show-page-cover', () => {
+            document.getElementById('page-grid').classList.add('page-cover');
+        });
+
+        EventBus.$on('hide-page-cover', () => {
+            document.getElementById('page-grid').classList.remove('page-cover');
+        });
+    }    
 }); 
 
-let products = document.getElementsByClassName('add-product-to-cart');
+let products = document.getElementsByClassName('quick-shop');
 
 for (let product of products) {
     product.addEventListener('click', function (e) {
         e.preventDefault();
-        //console.log(product.dataset);
-        EventBus.$emit('add-to-cart', { "id": 6, "name": "šest", "price": 782500, "currency": "Kč" });
+        EventBus.$emit('load-product-detail', { "id": product.dataset.productId });
     });
 }

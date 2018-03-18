@@ -56,10 +56,12 @@ export default {
 	},
 	methods: {
 		init() {
+			EventBus.$emit('init-loading');
 			fetch('/data/delivery.json', {
 				method: 'GET'
 			})
 			.then(response  => {
+				EventBus.$emit('destroy-loading');
 				if(response.ok) {
 					return response.json();
 				} else {
@@ -76,11 +78,13 @@ export default {
 		fetchAdditional(deliveryId) {
 			let index = findIndex(this.deliveriesList, o => { return o.id === deliveryId });
 			if(!this.deliveriesList[index].hasOwnProperty('aditional')) {
+				EventBus.$emit('init-loading');
 				fetch('/data/delivery-detail.json', {
 					method: 'POST',
 					body: {id: deliveryId}
 				})
 				.then(response  => {
+					EventBus.$emit('destroy-loading');
 					if(response.ok) {
 						return response.json();
 					} else {

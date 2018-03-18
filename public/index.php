@@ -7,6 +7,22 @@
     <link rel="icon" href="/favicon.ico">
     <title>Comfy shoping</title>
     <link rel="stylesheet" href="/css/app.css">
+    <script>
+        window.i18n = window.i18n || {}; 
+        var i18npart = {
+            "cart":"Košík",
+            "personal-info":"Osobní údaje",
+            "choose-delivery":"Vybrat dopravu",
+            "delivery":"Doprava",
+            "choose-payment":"Vybrat platbu",
+            "payment":"Platba",
+            "finish-cart":"Dokončit objednávku",
+            "summary":"Shrnutí",
+            "confirm":"Potvrdit"
+        }; 
+        for (var w in i18npart) { window.i18n[w] = i18npart[w]; };
+    </script>
+
 </head>
 <body>
 <div id="root">
@@ -22,21 +38,31 @@
         </div>    
 
         <?php 
-            $json_prods = file_get_contents('data/product-list.json');
+            $json_prods = file_get_contents('http://cartapi.nettrender.com/api/products/get');
             $prodArray = json_decode($json_prods);
         ?>
 
         <div class="products-holder">
             <?php foreach ($prodArray as $produkt): ?>
                 <div class="product">
-                    <div class="name"><?= htmlspecialchars($produkt->name) ?></div>
-                    <a href="#" class="add-product-to-cart" data-product-id="1" data-product-variant="" data>pridaj</a>
+                    <div class="thumbnail">
+                        <img src="<?= htmlspecialchars($produkt->image) ?>" alt="<?= htmlspecialchars($produkt->productName) ?>">
+                    </div>
+                    <div class="info">
+                        <h2 class="name"><?= htmlspecialchars($produkt->productName) ?></h2>
+                        <p class="summary"><?= htmlspecialchars($produkt->descriptionSummary) ?></p>
+                        <div class="price"><?= htmlspecialchars($produkt->priceVAT) ?></div>
+                        <div class="btns">
+                            <a href="#" class="btn">Detail</a>
+                            <a href="#"  class="btn ghost quick-shop" data-product-id="<?= htmlspecialchars($produkt->productId) ?>">Rychlý nákup</a>
+                        </div>
+                    </div>
                 </div>        
             <?php endforeach; ?>
         </div>
     </div>
-    <quick-detail></quick-detail>
-    <shopping-cart></shopping-cart>
+    <product-detail></product-detail>
+    <shopping-cart></shopping-cart>    
     <flash-message message=""></flash-message>
 </div>
 

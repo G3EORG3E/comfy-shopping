@@ -44,11 +44,11 @@ export default {
             EventBus: EventBus,
             currentStep: {},
             stepsArr: [
-                {component:'cart-product-list', label: 'Košík', nextBtn: 'Osobní údaje', accessible: false},
-                {component:'cart-contact-info', label: 'Osboní údaje', nextBtn: 'Vybrat dopravu', accessible: false},
-                {component:'cart-delivery-info', label: 'Doprava', nextBtn: 'Vybrat platbu', accessible: false},
-                {component:'cart-payment-info', label: 'Platba', nextBtn: 'Dokončit objednávku', accessible: false},
-                {component:'cart-summary', label: 'Shrnutí', nextBtn: 'Potvrdit', accessible: false}
+                {component:'cart-product-list', label: __('cart'), nextBtn: __('personal-info'), accessible: false},
+                {component:'cart-contact-info', label: __('personal-info'), nextBtn: __('choose-delivery'), accessible: false},
+                {component:'cart-delivery-info', label: __('delivery'), nextBtn: __('choose-payment'), accessible: false},
+                {component:'cart-payment-info', label: __('payment'), nextBtn: __('finish-cart'), accessible: false},
+                {component:'cart-summary', label: __('summary'), nextBtn: __('confirm'), accessible: false}
             ]
         }; 
     },
@@ -69,11 +69,11 @@ export default {
     methods: {
         showCart() {
             this.isVisible = true;
-            document.getElementById('page-grid').classList.add('active-cart');
+            EventBus.$emit('show-page-cover');
         },
         hideCart() { 
             this.isVisible = false;
-            document.getElementById('page-grid').classList.remove('active-cart');
+            EventBus.$emit('hide-page-cover');
         },
         processStep(step) {
             let index = findIndex(this.stepsArr, o => { return o.component === step.component });

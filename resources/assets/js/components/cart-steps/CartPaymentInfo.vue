@@ -41,10 +41,12 @@ name: 'cart-payment-info',
 	},
 	methods: {
 		init() {
+			EventBus.$emit('init-loading');
 			fetch('/data/payment.json', {
 				method: 'GET'
 			})
 			.then(response  => {
+				EventBus.$emit('destroy-loading');
 				if(response.ok) {
 					return response.json();
 				} else {

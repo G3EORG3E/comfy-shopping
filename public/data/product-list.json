@@ -1,20 +1,23 @@
 [
     {
         "id": 4,
-        "name": "čtyř",
-        "price": 882500,
-        "currency": "Kč"
+        "name": "Iphone 8 White",
+        "descrption": "Lorem ipsum dolor sit amet imlicity text",
+        "image": "/images/iphone8w.png",
+        "price": "19 585 Kč"
     },
     {
         "id": 5,
-        "name": "pet",
-        "price": 8542500,
-        "currency": "Kč"
+        "name": "Iphone 8 Black",
+        "descrption": "Lorem ipsum dolor sit amet imlicity text",
+        "image": "/images/iphone8b.png",
+        "price": "19 999 Kč"
     },
     {
         "id": 6,
-        "name": "šest",
-        "price": 782500,
-        "currency": "Kč"
+        "name": "Iphone X",
+        "descrption": "Lorem ipsum dolor sit amet imlicity text",
+        "image": "/images/iphonex.png",
+        "price": "29 599 Kč"
     }
 ]

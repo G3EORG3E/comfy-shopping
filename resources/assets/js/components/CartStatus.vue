@@ -20,7 +20,7 @@ export default {
   created() {
       EventBus.$on('refresh-status', (summary,count) => {
           this.currency = summary.currency;
-          this.price = summary.priceVat;
+          this.price = summary.priceVAT;
           this.itemCount = count;
       });
   },
