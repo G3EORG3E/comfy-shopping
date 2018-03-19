@@ -25,12 +25,10 @@
 		</transition-group>
 		<p class="empty-cart" v-if="products.length == 0">Košík je prázdný</p>
 		<div class="bottom-status" v-if="products.length != 0">
-			<div>
+			<div id="voucher">
 				<input type="text" placeholder="Voucher Code" v-model="voucherCode">
-				<button @click="voucherValidate">Submit</button>
-				<div v-if="activeVoucher">
-					<a href="#" @click.prevent="removeVoucher">Odstranit Voucher</a>
-				</div>
+				<button v-if="!activeVoucher" class="btn ghost" @click="voucherValidate">Odeslat</button>
+				<button v-if="activeVoucher" class="btn ghost" @click.prevent="removeVoucher">Odstranit</button>
 			</div>
 			<div class="cart-items-summary">
 				<div class="price">Cena bez DPH: <strong>{{ summary.price }} </strong></div>
@@ -200,9 +198,13 @@ export default {
 					alert("Something went wrong bro :(");
 				}
 			})
-			.then(({products, summary}) => {
+			.then(({products, summary, voucherCode}) => {
 				this.products = products;
 				this.summary = summary;
+				this.voucherCode = voucherCode;
+				if(voucherCode.length) {
+					this.activeVoucher = true;
+				}
 			});
 		},
 		fetchOnAdd(product) {

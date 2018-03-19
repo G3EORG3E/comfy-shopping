@@ -37,11 +37,22 @@
             font-weight: 500;
         }
         .desc {
-            margin-left: auto;
+            /*margin-left: auto;
             margin-right: 6%;
+            text-align: right;*/
+            margin-left: auto;
+            margin: 2px 0;
+            text-align: left;
+            display: block;
+            font-weight: 400;
+            text-transform: none;
+            color: rgba($color: $cart-main-color, $alpha: .7);
         }
         .price {
             font-weight: 500;
+            min-width: 95px;
+            text-align: right;
+            margin-left: auto;
         }
 
         .more-info {
@@ -50,7 +61,25 @@
             padding: 29px 29px;
 
             p {
-                margin: 0 0 5px;;
+                margin: 0 0 5px;
+                color: $cart-basic-color;
+            }
+
+            select {
+                margin-top: 20px;
+                color: $cart-basic-color;
+                width: 100%;
+                display: block;
+                border: none;
+                background: transparent;
+                border: 1px solid rgba($color: $cart-main-color, $alpha: .2);
+                padding: 7px 8px;
+                font-size: 15px;
+                outline: 0;
+                transition: all .35s ease-in-out;
+                border-radius: 3px;
+                background: rgba(255, 255, 255, 0.42);
+
             }
         }
     }

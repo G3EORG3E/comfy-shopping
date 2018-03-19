@@ -6,8 +6,9 @@
                     <span class="thumbnail">
                         <img :src="payment.image" :alt="payment.label">
                     </span>
-                    <span class="name">{{ payment.label }}</span>
-                    <span class="desc">{{ payment.description }}</span>
+                    <span class="name">{{ payment.label }}
+						<span class="desc">{{ payment.description }}</span>
+						</span>                    
 					<span class="price">{{ payment.price }}</span>
 				</label>
 			</div>
@@ -42,7 +43,7 @@ name: 'cart-payment-info',
 	methods: {
 		init() {
 			EventBus.$emit('init-loading');
-			fetch('/data/payment.json', {
+			fetch('http://cartapi.nettrender.com/api/cart/payments/get', {
 				method: 'GET'
 			})
 			.then(response  => {
@@ -58,7 +59,23 @@ name: 'cart-payment-info',
 			});
 		},
 		submitForm() {
-			EventBus.$emit('cart-next-step');
+			fetch('http://cartapi.nettrender.com/api/cart/payment/set', {
+				method: 'POST',
+				body: JSON.stringify({ 
+					paymentId: this.selectedPayment,
+				}),
+				headers: new Headers({
+					'Content-Type': 'application/json'
+				})
+			})
+			.then(response  => {
+				EventBus.$emit('destroy-loading');
+				if(response.ok) {
+					EventBus.$emit('cart-next-step');
+				} else {
+					flash("Nastale neočekavaná chyba, zkuste to později.");
+				}
+			})
 		}
 	}
 }

@@ -1,23 +1,6 @@
 {
     "products": [
         {
-            "id": 1, "name": "jedddna", "price": "2500 Kč", "count": 1, "currency": "Kč"
-        },
-        {
-            "id": 2, "name": "dva", "price": "5700 Kč", "count": 1, "currency": "Kč"
-        }
-    ],
-    "summary": {
-        "price": "500 Kč",
-        "vatPrecentage": 15, 
-        "vatAmount": "252 Kč",
-        "priceVat": "752 Kč"
-    }
-}
-
-{
-    "products": [
-        {
             "ordering": 1,
             "productId": 1,
             "variantId": 1,

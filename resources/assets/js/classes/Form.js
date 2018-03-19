@@ -42,7 +42,7 @@ export default class Form {
     validate(property) {
 
         let valid = true;
-        let propertyValue = this[property].value;
+        let propertyValue = this[property].value.toString();
 
         for (let rule of this[property].rules) {
             let ruleParts = rule.split(':');
@@ -52,7 +52,7 @@ export default class Form {
             if (ruleMethod == 'if') {
                 let ifArgs = ruleArg.split('@');
 
-                if ((this[ifArgs[0]].value == ifArgs[1])) continue;
+                if ((this[ifArgs[0]].value.toString() === ifArgs[1])) continue;
                 else valid = true; break;
             }
 
@@ -103,7 +103,10 @@ export default class Form {
             if (this.isValid()) {
                 fetch(url, {
                     method: 'POST',
-                    body: this.data()
+                    body: JSON.stringify(this.data()),
+                    headers: new Headers({
+                        'Content-Type': 'application/json'
+                    })
                 })
                     .then(response => {
                         if (response.ok) {

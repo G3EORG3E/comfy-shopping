@@ -69,11 +69,12 @@
 				</div>
 			</div>
 			<div class="form-row">
-				<div class="form-col col-2" :class="{ hasError: !form.country.isValid }">
+				<div class="form-col col-2" :class="{ hasError: !form.adressCountry.isValid }">
 					<label>Stát</label>
-					<select v-model="form.country.value">
-						<option v-for="country in countries" :key="country" v-text="country"></option>
+					<select v-model="form.adressCountry.value">
+						<option v-for="country in countries" :key="country.id" v-text="country.country" :value="country.id"></option>
 					</select>
+					<div class="form-error">{{form.adressCountry.errorMessage}}</div>
 				</div>
 				<div class="form-col col-2" :class="{ hasError: !form.zipCode.isValid }">
 					<label>PSČ</label>
@@ -94,7 +95,7 @@
 					<label for="createAcountCheck">Vytvořit účet pro pozdější použití</label>
 				</div>
 			</div>	
-			<div class="form-row" v-if="form.createAccount.value || !isLoged">
+			<div class="form-row" v-if="form.createAccount.value && !isLoged">
 				<div class="form-col col-2" :class="{ hasError: !form.password.isValid }">
 					<label>Heslo</label>
 					<input type="password" name="password" v-model="form.password.value">
@@ -155,8 +156,9 @@
 					<div class="form-col col-2" :class="{ hasError: !form.deliveryCountry.isValid }">
 						<label>Stát</label>
 						<select v-model="form.deliveryCountry.value">
-							<option v-for="country in countries" :key="country" v-text="country"></option>
+							<option v-for="country in countries" :key="country.id" v-text="country.country" :value="country.id"></option>
 						</select>
+						<div class="form-error">{{form.deliveryCountry.errorMessage}}</div>
 					</div>
 					<div class="form-col col-2" :class="{ hasError: !form.deliveryZipCode.isValid }">
 						<label>PSČ</label>
@@ -210,44 +212,72 @@ export default {
 				},
 				choosenEntity: {
 					value: 'private',
-					//rules: ['required']
+					rules: ['required']
 				},
 				firstName: {
-					//rules: ['if:choosenEntity@private','required']
+					rules: ['if:choosenEntity@private','required']
 				},
-				surName: {},
+				surName: {
+					rules: ['if:choosenEntity@private','required']
+				},
 				company: {
 					rules: ['if:choosenEntity@legal','required']
 				},
-				companyId: {},
-				vatId: {},
-				address: {},
-				houseCode: {},
-				city: {},
-				country: {
-					//rules: ['required']
+				companyId: {
+					rules: ['if:choosenEntity@legal','required']
+				},
+				vatId: {
+					rules: ['if:choosenEntity@legal','required']
+				},
+				address: {
+					rules: ['required']
+				},
+				houseCode: {
+					rules: ['required']
+				},
+				city: {
+					rules: ['required']
+				},
+				adressCountry: {
+					rules: ['required']
 				},
 				zipCode: {},
 				phone: {},
 				createAccount: {},
-				password: {},
+				password: {
+					rules: ['if:createAccount@true','required']
+				},
 				rePassword: {
-					rules: ['match:password']
+					rules: ['if:createAccount@true','required']
 				},
 				sendElseWhere: {},
 				deliveryFirstName: {
 					rules: ['if:sendElseWhere@true','required']
 				},
-				deliverySurName: {},
-				deliveryCompany: {},
-				deliveryAddress: {},
-				deliveryHouseCode: {},
-				deliveryCity: {},
-				deliveryCountry: {},
-				deliveryZipCode: {}
+				deliverySurName: {
+					rules: ['if:sendElseWhere@true','required']
+				},
+				deliveryCompany: {
+					rules: ['if:sendElseWhere@true','required']
+				},
+				deliveryAddress: {
+					rules: ['if:sendElseWhere@true','required']
+				},
+				deliveryHouseCode: {
+					rules: ['if:sendElseWhere@true','required']
+				},
+				deliveryCity: {
+					rules: ['if:sendElseWhere@true','required']
+				},
+				deliveryCountry: {
+					rules: ['if:sendElseWhere@true','required']
+				},
+				deliveryZipCode: {
+					rules: ['if:sendElseWhere@true','required']
+				}
 			});
 
-			fetch('/data/registered.json', {
+			fetch('/data/loged.json', {
 				method: 'GET'
 			})
 			.then(response => {
@@ -280,7 +310,7 @@ export default {
         },
 		submitForm() {
 			EventBus.$emit('init-loading');
-			this.form.post('/data/form-correct.json')
+			this.form.post('http://cartapi.nettrender.com/api/cart/customer/set')
 			//this.form.post('/data/form-incorrect.php')
 			.then((data) => {
 				EventBus.$emit('destroy-loading');
