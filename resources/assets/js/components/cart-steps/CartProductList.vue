@@ -210,6 +210,7 @@ export default {
 			});
 		},
 		fetchOnAdd(product) {
+			EventBus.$emit('cart-reset');
 			EventBus.$emit('init-loading');
 			EventBus.$emit('show-cart');
 			fetch('http://cartapi.nettrender.com/api/cart/product/add', {

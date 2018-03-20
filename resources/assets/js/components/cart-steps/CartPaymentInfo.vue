@@ -11,9 +11,11 @@
 						</span>                    
 					<span class="price">{{ payment.price }}</span>
 				</label>
-                <div class="more-info" v-if="selectedPayment == payment.id">
-                    <p class="full-description">{{ payment.longDescription }}</p>
-                </div>
+				<transition name="accordion">  
+					<div class="more-info" v-if="selectedPayment == payment.id">
+						<p class="full-description">{{ payment.longDescription }}</p>
+					</div>
+				</transition>
 			</div>
 	</div>
 </template>
@@ -25,7 +27,7 @@ name: 'cart-payment-info',
 		return {
 			paymentsList: [],
 			selectedPayment: '',
-			reload: false
+			reload: true
 		}
 	},
 	created() {
@@ -33,14 +35,13 @@ name: 'cart-payment-info',
             if(this.$options.name == name)
                 this.submitForm(); 
 		});
-
-		this.init();		
+		
 	},
 	activated() {
 		if(this.reload) {
-			this.init();
 			this.reload = false;
 			this.selectedPayment = '';
+			this.init();
 		}
 	},
 	methods: {

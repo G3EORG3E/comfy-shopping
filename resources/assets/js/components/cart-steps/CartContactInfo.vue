@@ -181,32 +181,8 @@ export default {
 		return {            
 			countries: [],
 			isLoged: false,
-			form: new Form({}),
-            reload: false,
-            tiemout: null
-		};
-	},
-	created() {
-		this.init();		
-
-		EventBus.$on('nextStep', name => {
-			if(this.$options.name == name) this.submitForm();
-		});
-	},
-	activated() {
-		if(this.reload) {
-			this.init();
-			this.reload = false;
-		}
-	},
-	beforeDestroy() {
-		EventBus.$off('nextStep');
-	},
-	methods: {
-		init() {
-			EventBus.$emit('init-loading');
-
-			this.form = new Form({email: {
+			form: new Form({
+				email: {
 					rules: ['email','required'],
 					errorMessage: "Zadejte realný email"
 				},
@@ -275,7 +251,29 @@ export default {
 				deliveryZipCode: {
 					rules: ['if:sendElseWhere@true','required']
 				}
-			});
+			}),
+            reload: true,
+            tiemout: null
+		};
+	},
+	created() {	
+
+		EventBus.$on('nextStep', name => {
+			if(this.$options.name == name) this.submitForm();
+		});
+	},
+	activated() {
+		this.init();
+		if(this.reload) {
+			this.reload = false;
+		}
+	},
+	beforeDestroy() {
+		EventBus.$off('nextStep');
+	},
+	methods: {
+		init() {
+			EventBus.$emit('init-loading');
 
 			fetch('/data/loged.json', {
 				method: 'GET'

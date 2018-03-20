@@ -12,6 +12,9 @@
             border-bottom: 1px solid rgba($color: $cart-main-color, $alpha: .15);
             padding: 10px;
             color: $cart-basic-color;
+            background: rgba($cart-main-color, $alpha: 0.04);
+            cursor: pointer;
+            transition: all
         }
 
         

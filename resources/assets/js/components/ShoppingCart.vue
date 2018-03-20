@@ -43,6 +43,7 @@ export default {
             isLoading: false,
             EventBus: EventBus,
             currentStep: {},
+            loadingDely: null,
             stepsArr: [
                 {component:'cart-product-list', label: __('cart'), nextBtn: __('personal-info'), accessible: false},
                 {component:'cart-contact-info', label: __('personal-info'), nextBtn: __('choose-delivery'), accessible: false},
@@ -56,8 +57,18 @@ export default {
         this.currentStep = this.stepsArr[0];
         EventBus.$on('show-cart', this.showCart);
         EventBus.$on('cart-next-step', this.nextStep);
-        EventBus.$on('init-loading', () => this.isLoading = true);
-        EventBus.$on('destroy-loading', () => this.isLoading = false);
+        EventBus.$on('init-loading', () => {
+            this.loadingDely = setTimeout(() => {
+                this.isLoading = true;                
+            }, 250);
+        });
+        EventBus.$on('destroy-loading', () => {
+            clearTimeout(this.loadingDely);
+            this.isLoading = false;
+        });
+        EventBus.$on('cart-reset', () => {
+            this.cartReset();
+        });
     },
     components: {
         'cart-product-list': cartProductList,
@@ -96,6 +107,12 @@ export default {
             this.$children[indexCurrent].$data.reload = true;   
             this.stepsArr[indexCurrent].accessible = false;
             this.currentStep = this.stepsArr[indexCurrent-1];     
+        },
+        cartReset() {
+            if(this.currentStep !== this.stepsArr[0]){
+                this.processStep(this.stepsArr[0]);
+                this.currentStep = this.stepsArr[0];
+            }
         }
     }
 }

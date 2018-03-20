@@ -1,3 +1,21 @@
+.accordion-enter-active {
+  animation: bounce-in .5s;
+}
+.accordion-leave-active {
+}
+@keyframes bounce-in {
+  0% {
+    transform: translateX(10%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+
+
 .component-fade-enter-active, .component-fade-leave-active {
   transition: opacity .4s ease;
 }

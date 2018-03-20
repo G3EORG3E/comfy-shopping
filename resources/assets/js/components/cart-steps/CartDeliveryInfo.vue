@@ -11,14 +11,16 @@
 						</span>                    
 					<span class="price">{{ delivery.price }}</span>
 				</label>
-				<div class="more-info" v-if="delivery.hasOwnProperty('aditional') && delivery.id == selectedDelivery">
-                    <p class="full-description">
-                        {{delivery.aditional.fullDescription}}
-                    </p>
-					<select id="zasilkovna" v-if="delivery.hasOwnProperty('aditional') && delivery.aditional.hasOwnProperty('places')" v-model="selectedPlace">
-						<option v-for="place in delivery.aditional.places" :key="place.placeId" :value="place.placeId">{{place.placeLabel}}</option>
-					</select>
-				</div>
+				<transition name="accordion">  
+					<div class="more-info" v-if="delivery.hasOwnProperty('aditional') && delivery.id == selectedDelivery">
+						<p class="full-description">
+							{{delivery.aditional.fullDescription}}
+						</p>
+						<select id="zasilkovna" v-if="delivery.aditional.hasOwnProperty('places')" v-model="selectedPlace">
+							<option v-for="place in delivery.aditional.places" :key="place.placeId" :value="place.placeId">{{place.placeLabel}}</option>
+						</select>
+					</div>
+				</transition>
 			</div>
 	</div>
 </template>
@@ -32,27 +34,24 @@ export default {
 			deliveriesList: [],
 			selectedDelivery: '',
 			selectedPlace: '',
-			reload: false
+			reload: true
 		}
     },
     watch: {
         selectedDelivery(id) {
-            this.fetchAdditional(id);
+            if(id) this.fetchAdditional(id);
         }
     },
 	created() {
 		EventBus.$on('nextStep', name => {
 			if(this.$options.name == name) this.submitForm(); 
-		});
-
-		this.init();		
+		});	
 	},
 	activated() {
 		if(this.reload) {
-			this.init();
 			this.reload = false;
-			this.selectedDelivery = '';
-			this.selectedPlace = '';
+			this.selectedPlace= '',
+			this.init();
 		}
 	},
 	methods: {
@@ -78,7 +77,7 @@ export default {
 		}, 
 		fetchAdditional(deliveryId) {
 			let index = findIndex(this.deliveriesList, o => { return o.id === deliveryId });
-			this.selectedPlace = null;
+			this.selectedPlace = '';
 
 			if(!this.deliveriesList[index].hasOwnProperty('aditional')) {
 				EventBus.$emit('init-loading');
@@ -102,10 +101,14 @@ export default {
 					forUpdate.aditional = delDetail;
                     Vue.set(this.deliveriesList, index, forUpdate);
 
-                    if(delDetail.places.length) {
+                    if(delDetail.hasOwnProperty('places') && delDetail.places.length) {
                         this.selectedPlace = delDetail.places[0].placeId;
                     }
 				});
+			} else {
+				if(this.deliveriesList[index].aditional.hasOwnProperty('places') && this.deliveriesList[index].aditional.places.length) {
+					this.selectedPlace = this.deliveriesList[index].aditional.places[0].placeId;
+				}
 			}
 		},
 		submitForm() {
