@@ -11,6 +11,9 @@
 						</span>                    
 					<span class="price">{{ payment.price }}</span>
 				</label>
+                <div class="more-info" v-if="selectedPayment == payment.id">
+                    <p class="full-description">{{ payment.longDescription }}</p>
+                </div>
 			</div>
 	</div>
 </template>
@@ -56,6 +59,10 @@ name: 'cart-payment-info',
 			})
 			.then((paymentsFetched) => {
 				this.paymentsList = paymentsFetched;
+
+                if(this.paymentsList.length) {
+                    this.selectedPayment = this.paymentsList[0].id;
+                }  
 			});
 		},
 		submitForm() {

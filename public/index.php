@@ -18,7 +18,8 @@
             "payment":"Platba",
             "finish-cart":"Dokončit objednávku",
             "summary":"Shrnutí",
-            "confirm":"Potvrdit"
+            "confirm":"Potvrdit",
+            "default-error": "Toto pole je povinné"
         }; 
         for (var w in i18npart) { window.i18n[w] = i18npart[w]; };
     </script>

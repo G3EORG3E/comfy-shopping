@@ -10,7 +10,7 @@ export default class Form {
             this[field] = {};
             this[field].value = (data[field].hasOwnProperty('value') ? data[field].value : '');
             this[field].rules = (data[field].hasOwnProperty('rules') ? data[field].rules : []);
-            this[field].errorMessage = (data[field].hasOwnProperty('errorMessage') ? data[field].errorMessage : "Default Message");
+            this[field].errorMessage = (data[field].hasOwnProperty('errorMessage') ? data[field].errorMessage : __('default-error'));
             this[field].isValid = true;
 
             this.fieldAttrs.push(field);

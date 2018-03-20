@@ -926,6 +926,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	name: 'cart-payment-info',
@@ -969,6 +972,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				}
 			}).then(function (paymentsFetched) {
 				_this2.paymentsList = paymentsFetched;
+
+				if (_this2.paymentsList.length) {
+					_this2.selectedPayment = _this2.paymentsList[0].id;
+				}
 			});
 		},
 		submitForm: function submitForm() {
@@ -1120,7 +1127,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				if (response.ok) {
 					return response.json();
 				} else {
-					alert("Something went wrong bro :(");
+					flash("Something went wrong bro :(");
 				}
 			}).then(function (_ref) {
 				var summary = _ref.summary,
@@ -1145,7 +1152,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				if (response.ok) {
 					return response.json();
 				} else {
-					alert("Something went wrong bro :(");
+					flash("Something went wrong bro :(");
 				}
 			}).then(function (summary) {
 				var index = _this3.products.indexOf(prod);
@@ -1209,7 +1216,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 				if (response.ok) {
 					return response.json();
 				} else {
-					alert("Something went wrong bro :(");
+					flash("Something went wrong bro :(");
 				}
 			}).then(function (_ref2) {
 				var products = _ref2.products,
@@ -1261,6 +1268,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
 //
 //
 //
@@ -4617,8 +4625,13 @@ var render = function() {
             _vm._v(" "),
             _c("div", { staticClass: "label" }, [
               _vm._v(
-                "\r\n\t\t\t\t\t" + _vm._s(product.productName) + "\r\n\t\t\t\t"
-              )
+                "\r\n\t\t\t\t\t" +
+                  _vm._s(product.productName) +
+                  "\r\n                    "
+              ),
+              _c("div", { staticClass: "variant" }, [
+                _vm._v(_vm._s(product.variantName))
+              ])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "price-holder" }, [
@@ -6271,7 +6284,15 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("span", { staticClass: "price" }, [_vm._v(_vm._s(payment.price))])
-        ])
+        ]),
+        _vm._v(" "),
+        _vm.selectedPayment == payment.id
+          ? _c("div", { staticClass: "more-info" }, [
+              _c("p", { staticClass: "full-description" }, [
+                _vm._v(_vm._s(payment.longDescription))
+              ])
+            ])
+          : _vm._e()
       ])
     })
   )
@@ -17458,7 +17479,7 @@ var Form = function () {
             this[field] = {};
             this[field].value = data[field].hasOwnProperty('value') ? data[field].value : '';
             this[field].rules = data[field].hasOwnProperty('rules') ? data[field].rules : [];
-            this[field].errorMessage = data[field].hasOwnProperty('errorMessage') ? data[field].errorMessage : "Default Message";
+            this[field].errorMessage = data[field].hasOwnProperty('errorMessage') ? data[field].errorMessage : __('default-error');
             this[field].isValid = true;
 
             this.fieldAttrs.push(field);

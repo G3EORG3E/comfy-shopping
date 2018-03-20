@@ -14,13 +14,14 @@
 				</ul>
 			</div>
 		</div>
-		<div class="recap">
+		<div class="recap"> 
 			<div class="item" v-for="product in cart.products" :key="product.productId">
 				<div class="thumbnail">
 					<img :src="product.image" alt="">
 				</div>
 				<div class="label">
 					{{ product.productName }}
+                    <div class="variant">{{ product.variantName }}</div>
 				</div>
 				<div class="price-holder">
 					{{ product.priceVAT }}

@@ -46,7 +46,9 @@ export default {
   	data() {
 		return {
 			products: [],
-			summary: {},
+			summary: {
+                
+            },
 			voucherCode: '',
 			activeVoucher: false
 		}; 
@@ -111,7 +113,7 @@ export default {
 				if(response.ok) {
 					return response.json();
 				} else {
-					alert("Something went wrong bro :(");
+					flash("Something went wrong bro :(");
 				}
 			})
 			.then(({summary,product}) => {
@@ -133,7 +135,7 @@ export default {
 				if(response.ok) {
 					return response.json();
 				} else {
-					alert("Something went wrong bro :(");
+					flash("Something went wrong bro :(");
 				}
 			})
 			.then((summary) => {
@@ -195,7 +197,7 @@ export default {
 				if(response.ok) {
 					return response.json();
 				} else {
-					alert("Something went wrong bro :(");
+					flash("Something went wrong bro :(");
 				}
 			})
 			.then(({products, summary, voucherCode}) => {

@@ -1233,6 +1233,8 @@ body {
 #cart-delivery-info .delivery-item .more-info p {
   margin: 0 0 5px;
   color: #574e73;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 #cart-delivery-info .delivery-item .more-info select {
@@ -1290,10 +1292,43 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  margin-top: -1px;
 }
 
-.recap .item img {
-  max-width: 40px;
+.recap .item .thumbnail {
+  width: 45px;
+  height: 45px;
+  margin-right: 3%;
+}
+
+.recap .item .thumbnail img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.recap .item .price-holder {
+  margin-left: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-line-pack: center;
+      align-content: center;
+}
+
+.recap .item .label {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 * {
