@@ -1,27 +1,13 @@
 <template>
 	<div id="cart-product-list">	
 		<transition-group name="list" tag="ul" class="cart-products">
-			<li class="cart-product" v-for="product in products" :key="'product'+product.productId+'varaint'+product.variantId">
-				<div class="thumbnail">
-					<a href="#"><img :src="product.image" :alt="product.productName"></a>
-				</div>
-				<div class="info">
-					<div class="product">
-						<a href="#">{{ product.productName }}</a>
-					</div>
-					<div class="variant">{{ product.variantName }}</div>
-				</div>
-				<div class="qty inc-dec-comp">
-					<div class="decrease" @click="changeProductCount(product,'dec')">-</div>
-					<input type="text" v-model="product.amount" min="1" @blur="(product.amount < 1 ? product.amount=1 : product.amount= Math.floor(product.amount))">
-					<div class="increase" @click="changeProductCount(product,'inc')">+</div>
-				</div>
-				<div class="price">
-					<div class="base">{{ product.price }}</div>
-					<div class="vat">{{ product.priceVAT }}</div>
-				</div>
-				<div class="remove" @click.prevent="removeProd(product)"></div>
-			</li>
+			<cart-product-item 
+                v-for="product in products" 
+                :key="'pid'+product.productId+'vid'+product.variantId"
+                :init-product="product" 
+                @deleted="prod => removeProd(prod)" 
+                @updated="prod => changeProductCount(prod)"
+                ></cart-product-item>
 		</transition-group>
 		<p class="empty-cart" v-if="products.length == 0">Košík je prázdný</p>
 		<div class="bottom-status" v-if="products.length != 0">
@@ -40,15 +26,19 @@
 
 <script>
 import findIndex from 'lodash.findindex'; 
+import cartProductItem from './CartProductItem.vue';
 
 export default {
-	name: 'cart-product-list',
+    name: 'cart-product-list',
+    components: { 
+        'cart-product-item': cartProductItem
+    },
   	data() {
 		return {
 			products: [],
 			summary: {
-                
-            },
+				
+			},
 			voucherCode: '',
 			activeVoucher: false
 		}; 
@@ -94,19 +84,14 @@ export default {
 				Vue.set(this.products, index, prod);
 			}
 		},
-		changeProductCount(prod,method) {
-			if (method == 'inc') {
-				prod.amount++;
-			} else {
-				prod.amount--;
-			}
+		changeProductCount(prod) {
 			EventBus.$emit('init-loading');
 			fetch('http://cartapi.nettrender.com/api/cart/change/amount', {
 				method: 'POST',  
 				body: JSON.stringify({productId: prod.productId,variantId: prod.variantId, amount: prod.amount}),
 				headers: new Headers({
-                	'Content-Type': 'application/json'
-            	})
+					'Content-Type': 'application/json'
+				})
 			})
 			.then(response  => {
 				EventBus.$emit('destroy-loading');
@@ -121,14 +106,14 @@ export default {
 				this.summary = summary;
 			});
 		},
-		removeProd(prod) {
+		removeProd(prod) { 
 			EventBus.$emit('init-loading');
 			fetch('http://cartapi.nettrender.com/api/cart/product/remove', {
 				method: 'POST',  
 				body: JSON.stringify({productId: prod.productId,variantId: prod.variantId}),
 				headers: new Headers({
-                	'Content-Type': 'application/json'
-            	})
+					'Content-Type': 'application/json'
+				})
 			})
 			.then(response  => {
 				EventBus.$emit('destroy-loading');
@@ -151,36 +136,36 @@ export default {
 				method: 'POST'
 			})
 			.then(response  => {
-                EventBus.$emit('destroy-loading');
-                if(response.ok) {
-                    response.json().then(summary => {
+				EventBus.$emit('destroy-loading');
+				if(response.ok) {
+					response.json().then(summary => {
 						this.summary = summary;
 						this.activeVoucher = false;
 						flash("Voucher odstraněn");
 					});
 				} else {
-                    flash("Voucher se nepodařilo odstrnait");
+					flash("Voucher se nepodařilo odstrnait");
 				}
 			}); 
 		},
 		voucherValidate() {
-            EventBus.$emit('init-loading');
+			EventBus.$emit('init-loading');
 			fetch('http://cartapi.nettrender.com/api/cart/voucher/apply', {
 				method: 'POST',  
 				body: JSON.stringify({ voucherCode: this.voucherCode }),
 				headers: new Headers({
-                	'Content-Type': 'application/json'
-            	})
+					'Content-Type': 'application/json'
+				})
 			})
 			.then(response  => {
-                EventBus.$emit('destroy-loading');
-                if(response.ok) {
-                    response.json().then(summary => {
+				EventBus.$emit('destroy-loading');
+				if(response.ok) {
+					response.json().then(summary => {
 						this.summary = summary;
 						this.activeVoucher = true;
 					});
 				} else {
-                    response.json().then(error => {
+					response.json().then(error => {
 						flash(error.error);
 					});
 				}
@@ -217,8 +202,8 @@ export default {
 				method: 'POST',  
 				body: JSON.stringify(product),
 				headers: new Headers({
-                	'Content-Type': 'application/json'
-            	})
+					'Content-Type': 'application/json'
+				})
 			})
 			.then(response  => {
 				EventBus.$emit('destroy-loading');
@@ -232,8 +217,7 @@ export default {
 			.then(({product, summary}) => {
 				this.addProd(product);
 				this.summary = summary;
-				flash('Zboží bylo přídáno do košíku');
-				
+				flash('Zboží bylo přídáno do košíku');				
 			});
 		}
 	}

@@ -4,11 +4,15 @@ import cartStatus from './components/CartStatus.vue';
 import flashMessage from './components/FlashMessage.vue';
 import productDetail from './components/ProductDetail.vue';
 import Translation from './classes/Translation.js';
+import intUpDown from './components/intUpDown.vue';
 
 
 window.EventBus = new Vue();
 window.flash = message =>  EventBus.$emit('flash', message);
 window.__ = translateKey => Translation.getTranslate(translateKey);
+
+//global components
+Vue.component('int-up-down', intUpDown);
 
 let app = new Vue({
     el: '#root',
@@ -29,6 +33,8 @@ let app = new Vue({
     }    
 }); 
 
+
+// work arounds
 let products = document.getElementsByClassName('quick-shop');
 
 for (let product of products) {

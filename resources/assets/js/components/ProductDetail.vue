@@ -11,23 +11,19 @@
 				<p class="desc">{{ product.descriptionSummary }}</p>
 				<div class="info code"><strong>Kód produktu: </strong><span>{{ product.code }}</span></div> 
 				<div class="info producer"><strong>Výrobce: </strong><span>{{ product.producerName }}</span></div> 
-				<div class="info stock in"><strong>Skladem: </strong><span>{{ selctedVariantObj.stockCount }}</span></div> 
 				<div class="variant">
 					<strong>Varianta:</strong>
 					<select v-model="selctedVariantId">
 						<option :value="variant.variantId" v-for="variant in product.variants" :key="variant.variantId" v-text="variant.variantName"></option>
 					</select>
 				</div>
+				<div class="info stock in"><strong>Skladem: </strong><span>{{ selctedVariantObj.stockCount }}</span></div> 
 				<div class="price">
 					<div class="price-holder novat"><strong>Cena bez DPH:</strong><span>{{ selctedVariantObj.price }}</span></div>
 					<div class="price-holder vat"><strong>Cena s DPH:</strong><span>{{ selctedVariantObj.priceVAT }}</span></div>
 				</div>
 				<div class="to-cart">
-					<div class="inc-dec-comp">
-						<div class="decrease" @click.prevent="product.amount--">-</div>
-						<input type="text" min="1" v-model="product.amount">
-						<div class="increase" @click.prevent="product.amount++">+</div>
-					</div>
+                     <int-up-down v-model="product.amount"></int-up-down>
 					<a href="#" class="btn" @click.prevent="addToCart">Přidat do košíku</a>
 				</div>
 		  </div>
@@ -43,18 +39,18 @@ export default {
 			isVisible: false,
 			product: {
 				productId: 1,
-				productName: "Iphone 8 White",
-				image: "/images/iphone8w.png",
-				descriptionSummary: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis ullam vero facere explicabo expedita, quae accusantium quidem, blanditiis consequuntur maiores eveniet nihil suscipit! Autem, modi.",
-				code: "560215684",
-				producerName: "Hruška",				
+				productName: '',
+				image: '',
+				descriptionSummary: '',
+				code: '',
+				producerName: '',
 				variants: [
 					{
 						variantId: 1,
-						variantName: "32 GB",
-						price: "15 745 Kč",
-						priceVAT: "15 999 Kč",
-						stockCount: "10 ks",
+						variantName: '',
+						price: '',
+						priceVAT: '',
+						stockCount: '',
 					}
 				],
 				amount: 1
@@ -82,8 +78,8 @@ export default {
 				method: 'POST',
 				body: JSON.stringify({productId: id}),
 				headers: new Headers({
-                	'Content-Type': 'application/json'
-            	})
+					'Content-Type': 'application/json'
+				})
 			})
 			.then(response  => {
 				if(response.ok) {
@@ -93,8 +89,8 @@ export default {
 				}
 			})
 			.then((getedProduct) => {
-				getedProduct['amount'] = 1;
-				this.product = getedProduct;
+                this.product = getedProduct;                
+				this.product['amount'] = 1;
 
 				this.selctedVariantId = this.product.variants[0].variantId;
 				EventBus.$emit('show-page-cover');
