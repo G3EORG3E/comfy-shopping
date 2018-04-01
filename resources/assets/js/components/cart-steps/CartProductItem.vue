@@ -33,6 +33,9 @@ export default {
             this.debauncer = setTimeout(() => {
                 this.$emit('updated',this.product);                
             }, 280);
+        },
+        initProduct(newProd) {
+            this.product = newProd;
         }
     }
 }

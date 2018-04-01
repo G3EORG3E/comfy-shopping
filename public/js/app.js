@@ -327,6 +327,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -1052,6 +1056,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.debauncer = setTimeout(function () {
                 _this.$emit('updated', _this.product);
             }, 280);
+        },
+        initProduct: function initProduct(newProd) {
+            this.product = newProd;
         }
     }
 });
@@ -1487,6 +1494,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 			this.amount = final;
 			this.$emit('input', parseInt(final));
+		},
+		value: function value(newValue) {
+			this.amount = newValue;
 		}
 	}
 
@@ -6469,6 +6479,16 @@ var render = function() {
           }
         },
         [
+          _c(
+            "div",
+            { staticClass: "cart-closer", on: { click: _vm.hideCart } },
+            [
+              _c("div", { staticClass: "cross" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "label" }, [_vm._v("Zavřít")])
+            ]
+          ),
+          _vm._v(" "),
           _c(
             "div",
             { staticClass: "inner-holder" },

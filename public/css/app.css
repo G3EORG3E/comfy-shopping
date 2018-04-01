@@ -634,6 +634,78 @@ body {
   font-weight: 300;
 }
 
+#shopping-cart .cart-closer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: absolute;
+  top: 17px;
+  right: -118px;
+  cursor: pointer;
+  border: 1px solid rgba(127, 116, 199, 0.16);
+  border-radius: 50px;
+  padding: 10px 47px 10px 17px;
+  background: rgba(255, 255, 255, 0.77);
+  z-index: 3;
+  -webkit-transition: all 0.5s cubic-bezier(1, -0.29, 0, 1.3);
+  transition: all 0.5s cubic-bezier(1, -0.29, 0, 1.3);
+}
+
+#shopping-cart .cart-closer:hover {
+  right: -28px;
+}
+
+#shopping-cart .cart-closer .cross {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  margin-right: 20px;
+}
+
+#shopping-cart .cart-closer .cross:after,
+#shopping-cart .cart-closer .cross:before {
+  content: " ";
+  position: absolute;
+  height: 2px;
+  width: 135%;
+  top: 0;
+  display: block;
+  background: rgba(127, 116, 199, 0.7);
+}
+
+#shopping-cart .cart-closer .cross:before {
+  -webkit-transform-origin: center left;
+          transform-origin: center left;
+  -webkit-transform: rotate(45deg);
+          transform: rotate(45deg);
+  left: 0;
+}
+
+#shopping-cart .cart-closer .cross:after {
+  -webkit-transform-origin: center right;
+          transform-origin: center right;
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+  right: 0;
+}
+
+#shopping-cart .cart-closer .label {
+  color: rgba(127, 116, 199, 0.7);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-transform: uppercase;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
 #shopping-cart .empty-cart {
   text-align: center;
   font-weight: 600;
@@ -646,6 +718,7 @@ body {
 #shopping-cart .cart-holder {
   width: 50%;
   max-width: 800px;
+  min-width: 650px;
   height: 100%;
   background: rgba(255, 255, 255, 0.89);
   border-radius: 10px 0 0 10px;
@@ -663,6 +736,14 @@ body {
   position: relative;
   -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.04);
           box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.04);
+}
+
+@media (max-width: 650px) {
+  #shopping-cart .cart-holder {
+    min-width: 100%;
+    max-width: 100%;
+    width: 100%;
+  }
 }
 
 #shopping-cart .cart-holder .inner-holder {
@@ -1030,7 +1111,8 @@ body {
 
 #voucher input[type=text] {
   color: #574e73;
-  width: 100%;
+  width: 150px;
+  max-width: 100%;
   display: block;
   border: none;
   background: transparent;

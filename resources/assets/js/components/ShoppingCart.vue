@@ -1,6 +1,10 @@
 <template>
 	<div id="shopping-cart" :class="{ active: isVisible }" @click="hideCart">
 		<div class="cart-holder" @click.stop :class="{ loading: isLoading }">
+			<div class="cart-closer" @click="hideCart">
+				<div class="cross"></div>
+				<div class="label">Zavřít</div>
+			</div>
 			<div class="inner-holder">  
 				<!-- <h2 class="cart-main-tittle"><span>{{stepsArr.indexOf(currentStep)+1}}/{{stepsArr.length}}</span> {{ currentStep.label }}</h2>-->
 				<ul class="cart-setps" :data-active="currentStep.label">

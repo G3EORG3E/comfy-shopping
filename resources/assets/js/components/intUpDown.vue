@@ -28,6 +28,9 @@ export default {
 
 			this.amount = final;
 			this.$emit('input', parseInt(final));
+		},
+		value(newValue) {
+			this.amount = newValue;
 		}
 	}
   

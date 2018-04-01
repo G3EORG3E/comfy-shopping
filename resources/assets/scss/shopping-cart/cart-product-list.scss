@@ -116,7 +116,8 @@
 
     input[type=text] {
         color: $cart-basic-color;
-        width: 100%;
+        width: 150px;
+        max-width: 100%;
         display: block;
         border: none;
         background: transparent;
