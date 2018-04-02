@@ -1,4 +1,4 @@
-import './bootstrap';
+import Vue from 'vue';
 import shoppingCart from './components/ShoppingCart.vue';
 import cartStatus from './components/CartStatus.vue';
 import flashMessage from './components/FlashMessage.vue';
@@ -7,6 +7,8 @@ import Translation from './classes/Translation.js';
 import intUpDown from './components/intUpDown.vue';
 
 
+// užitečné globalní proměnné
+window.Vue = Vue;
 window.EventBus = new Vue();
 window.flash = message =>  EventBus.$emit('flash', message);
 window.__ = translateKey => Translation.getTranslate(translateKey);

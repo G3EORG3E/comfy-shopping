@@ -17503,7 +17503,8 @@ module.exports = function(module) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bootstrap__ = __webpack_require__("./resources/assets/js/bootstrap.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__("./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_ShoppingCart_vue__ = __webpack_require__("./resources/assets/js/components/ShoppingCart.vue");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_ShoppingCart_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_ShoppingCart_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_CartStatus_vue__ = __webpack_require__("./resources/assets/js/components/CartStatus.vue");
@@ -17523,7 +17524,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-window.EventBus = new Vue();
+// užitečné globalní proměnné
+window.Vue = __WEBPACK_IMPORTED_MODULE_0_vue___default.a;
+window.EventBus = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a();
 window.flash = function (message) {
     return EventBus.$emit('flash', message);
 };
@@ -17532,9 +17535,9 @@ window.__ = function (translateKey) {
 };
 
 //global components
-Vue.component('int-up-down', __WEBPACK_IMPORTED_MODULE_6__components_intUpDown_vue___default.a);
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('int-up-down', __WEBPACK_IMPORTED_MODULE_6__components_intUpDown_vue___default.a);
 
-var app = new Vue({
+var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
     el: '#root',
     components: {
         shoppingCart: __WEBPACK_IMPORTED_MODULE_1__components_ShoppingCart_vue___default.a,
@@ -17587,32 +17590,6 @@ try {
         }
     }
 }
-
-/***/ }),
-
-/***/ "./resources/assets/js/bootstrap.js":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__("./node_modules/vue/dist/vue.common.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
-
-//import axios from 'axios';
-//import jquery from 'jquery';
-
-
-// VUE
-window.Vue = __WEBPACK_IMPORTED_MODULE_0_vue___default.a;
-
-// AXIOS
-// window.axios = axios;
-// window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-// JQUERY
-/*try {
-    window.$ = window.jQuery = jquery;
-} catch (e) { }
-*/
 
 /***/ }),
 
